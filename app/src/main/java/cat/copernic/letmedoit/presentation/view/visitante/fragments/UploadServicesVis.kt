@@ -15,9 +15,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [UploadServicesVis.newInstance] factory method to
- * create an instance of this fragment.
+ * Subclase fragment que infla la pantalla de subir un servicio del visitante.
  */
 class UploadServicesVis : Fragment() {
     // TODO: Rename and change types of parameters
@@ -37,8 +35,9 @@ class UploadServicesVis : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        // Infla el layout del fragment
         binding = FragmentUploadServicesVisBinding.inflate(inflater,container,false)
+        //Listener que nos lleva a la pantalla del login
         binding.btnSignIn.setOnClickListener { startActivity(Intent(requireContext(), Login::class.java)) }
         return binding.root
     }

@@ -15,9 +15,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [RegistroOpcionesCuenta.newInstance] factory method to
- * create an instance of this fragment.
+ * Subclase fragment que infla la pantalla de opciones de cuenta del visitante.
  */
 class RegistroOpcionesCuenta : Fragment() {
     // TODO: Rename and change types of parameters
@@ -37,12 +35,16 @@ class RegistroOpcionesCuenta : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        // Infla el layout del fragment
         binding = FragmentRegistroOpcionesCuentaBinding.inflate(inflater,container,false)
+        //Listener que nos lleva a la pantalla del login
         binding.goToLogin.setOnClickListener { goToLogin() }
         return binding.root
     }
 
+    /**
+     * Funcion que inicia la activity login
+     */
     private fun goToLogin() {
         startActivity(Intent(activity, Login::class.java))
     }

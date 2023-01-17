@@ -15,9 +15,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [MessagesVis.newInstance] factory method to
- * create an instance of this fragment.
+ * Subclase fragment que infla la pantalla de tratos del visitante.
  */
 class MessagesVis : Fragment() {
     // TODO: Rename and change types of parameters
@@ -37,8 +35,9 @@ class MessagesVis : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        // Infla el layout del fragment
         binding = FragmentMessagesVisBinding.inflate(inflater,container,false)
+        //Listener que nos lleva a la pantalla de login
         binding.btnSignIn.setOnClickListener { startActivity(Intent(requireContext(), Login::class.java)) }
         return binding.root
     }
