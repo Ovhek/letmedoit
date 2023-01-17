@@ -17,6 +17,24 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Una clase ViewModel que conecta la vista con el repositorio de Services.
+ * Proporciona objetos LiveData para mostrar el estado actual de las operaciones.
+ * Todas las funciones de esta clase actuan sobre la base de datos.
+ * Utiliza los UseCase para comunicarse con el repositorio
+ *@param getAllServicesUseCase  objeto de GetAllServicesUseCase
+ *@param getServiceUseCase  objeto de GetServiceUseCase
+ *@param saveServiceUseCase  objeto de SaveServiceUseCase
+ *@param saveImageUseCase  objeto de SaveImageUseCase
+ *@param updateTitleUseCase  objeto de UpdateTitleUseCase
+ *@param updateEditedTimeUseCase  objeto de UpdateEditedTimeUseCase
+ *@param updateNLikesUseCase  objeto de UpdateNLikesUseCase
+ *@param updateDescriptionUseCase  objeto de UpdateDescriptionUseCase
+ *@param updateCategoryUseCase  objeto de UpdateCategoryUseCase
+ *@param removeImageUseCase  objeto de RemoveImageUseCase
+ *@param editServiceImageUseCase  objeto de EditServiceImageUseCase
+ *@param removeServiceUseCase  objeto de RemoveServiceUseCase
+ */
 @HiltViewModel
 class ServiceViewModel @Inject constructor(
     private val getAllServicesUseCase: GetAllServicesUseCase,
@@ -31,29 +49,49 @@ class ServiceViewModel @Inject constructor(
     private val removeImageUseCase: RemoveImageUseCase,
     private val editServiceImageUseCase: EditServiceImageUseCase,
     private val removeServiceUseCase: RemoveServiceUseCase
-): ViewModel() {
+) : ViewModel() {
 
+    /**
+     * Estado de lectura de un servicio de la vase de datos
+     * Puede contener 4 valores (DataState)
+     */
     private val mGetServiceState: MutableLiveData<DataState<Service>> = MutableLiveData()
 
     val getServiceState: LiveData<DataState<Service>>
         get() = mGetServiceState
 
+    /**
+     * Estado de lectura de todos los servicios de la base de datos
+     * Puede contener 4 valores (DataState)
+     */
     private val mGetServicesState: MutableLiveData<DataState<List<Service>>> = MutableLiveData()
 
     val getServicesState: LiveData<DataState<List<Service>>>
         get() = mGetServicesState
 
+    /**
+     *Estado de guardar un servico en la base de datos
+     * Puede contener 4 valores (DataState)
+     */
     private val mSaveServiceState: MutableLiveData<DataState<Service>> = MutableLiveData()
 
     val saveServiceState: LiveData<DataState<Service>>
         get() = mSaveServiceState
 
+    /**
+     *Estado de guardar la imagen del servicio en la base de datos
+     * Puede contener 4 valores (DataState)
+     */
     private val mSaveImageState: MutableLiveData<DataState<String>> = MutableLiveData()
 
     val saveImageState: LiveData<DataState<String>>
         get() = mSaveImageState
 
-    fun getAllServices(){
+    /**
+     * Funcion que lee todos los servicios de la base de datos
+     * Utiliza getAllServicesUseCase para invocar la funcio del repositorio
+     */
+    fun getAllServices() {
         viewModelScope.launch {
             getAllServicesUseCase()
                 .onEach { dataState ->
@@ -61,7 +99,13 @@ class ServiceViewModel @Inject constructor(
                 }.launchIn(viewModelScope)
         }
     }
-    fun getService(uid : String){
+
+    /**
+     * Lee un servicio determinado de la base de datos
+     * Utilza el getServiceUseCase para invocar la funcion del repositorio
+     * @param uid Id del servicio
+     */
+    fun getService(uid: String) {
         viewModelScope.launch {
             getServiceUseCase(uid)
                 .onEach { dataState ->
@@ -69,7 +113,13 @@ class ServiceViewModel @Inject constructor(
                 }.launchIn(viewModelScope)
         }
     }
-    fun saveService(service: Service){
+
+    /**
+     * Funcion que guarda un servicio den la base de datos
+     * Utiliza saveServiceUseCase para invocar la funcion de repositorio
+     * @param service instancia de la clase Servicio
+     */
+    fun saveService(service: Service) {
         viewModelScope.launch {
             saveServiceUseCase(service)
                 .onEach { dataState ->
@@ -78,22 +128,38 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
-    fun saveImage(fileUri : Uri, serviceId : String,index : Int){
+    /**
+     * Funcion una imagen en la base de datos
+     * Utiliza saveImageUseCase para invocar la funcion del repositorio
+     * @param fileUri Uri de la imagen
+     * @param serviceId id del servicio
+     * @param index Indice de la imagen
+     */
+    fun saveImage(fileUri: Uri, serviceId: String, index: Int) {
         viewModelScope.launch {
-            saveImageUseCase(fileUri, serviceId,index)
+            saveImageUseCase(fileUri, serviceId, index)
                 .onEach { dataState ->
                     mSaveImageState.value = dataState
                 }.launchIn(viewModelScope)
         }
     }
 
-
+    /**
+     *Estado de la actualizacion del titulo del servico en la base de datos
+     * Puede contener 4 valores (DataState)
+     */
     private val mUpdateTitleState: MutableLiveData<DataState<Boolean>> = MutableLiveData()
 
     val updateTitleState: LiveData<DataState<Boolean>>
         get() = mUpdateTitleState
 
-    fun updateTitle(idService : String, newTitle : String){
+    /**
+     * Funcion que actualiza el titulo de un servicio en la base de datos
+     * Utiliza updateTitleUseCase para invocar la funcion del repositorio
+     * @param idService id del servicio
+     * @param newTitle nuevo titulo
+     */
+    fun updateTitle(idService: String, newTitle: String) {
         viewModelScope.launch {
             updateTitleUseCase(idService, newTitle)
                 .onEach { dataState ->
@@ -102,12 +168,22 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
+    /**
+     *Estado de la actualizacion de la descripcion en la base de datos
+     * Puede contener 4 valores (DataState)
+     */
     private val mUpdateDescriptionState: MutableLiveData<DataState<Boolean>> = MutableLiveData()
 
     val updateDescriptionState: LiveData<DataState<Boolean>>
         get() = mUpdateDescriptionState
 
-    fun updateDescription(idService : String, newDescription : String){
+    /**
+     * Funcion que actualiza la descripcion de un servicio en la base de datos
+     * Utiliza updateDescriptionUseCase para invocar la funcion del repositorio
+     * @param idService id del servicio
+     * @param newDescription nueva descripcion
+     */
+    fun updateDescription(idService: String, newDescription: String) {
         viewModelScope.launch {
             updateDescriptionUseCase(idService, newDescription)
                 .onEach { dataState ->
@@ -115,26 +191,49 @@ class ServiceViewModel @Inject constructor(
                 }.launchIn(viewModelScope)
         }
     }
+
+    /**
+     *  Estado de actualizacion de una imagen en la base de datos
+     * Puede contener 4 valores (DataState)
+     */
     private val mUpdateServiceImageState: MutableLiveData<DataState<String>> = MutableLiveData()
 
     val updateServiceImageState: LiveData<DataState<String>>
         get() = mUpdateServiceImageState
 
-    fun editServiceImage(idService : String,newFileURI : Uri, index: Int){
+    /**
+     * Funcion que actualiza una imagen de un servicio en la base de datos
+     * Utiliza editServiceImageUseCase para invocar la funcion del repositorio
+     * @param idService id del servicio
+     * @param newFileURI nueva imagen
+     * @param index indice de la imagen en la coleccion de imagenes del servicio
+     */
+    fun editServiceImage(idService: String, newFileURI: Uri, index: Int) {
         viewModelScope.launch {
-            editServiceImageUseCase(idService,newFileURI,index)
+            editServiceImageUseCase(idService, newFileURI, index)
                 .onEach { dataState ->
                     mUpdateServiceImageState.value = dataState
                 }.launchIn(viewModelScope)
         }
     }
 
+    /**
+     *Estadp de la actulizacion de la categoria en la base de datos
+     * Puede contener 4 valores (DataState)
+     */
     private val mUpdateCategoryState: MutableLiveData<DataState<Boolean>> = MutableLiveData()
 
     val updateCategoryState: LiveData<DataState<Boolean>>
         get() = mUpdateCategoryState
 
-    fun updateCategory(idService : String, newCategoryMap : CategoryMap){
+    /**
+     * Funcion que actualiza la categoria de un servicio en la base de datos
+     * Utiliza updateCategoryUseCase para invocar la funcion del repositorio
+     * @param idService id del servicio
+     * @param newCategoryMap Instancia de la clase CategoryMap que contiene la nueva categoria
+     * y subcategoria
+     */
+    fun updateCategory(idService: String, newCategoryMap: CategoryMap) {
         viewModelScope.launch {
             updateCategoryUseCase(idService, newCategoryMap)
                 .onEach { dataState ->
@@ -143,12 +242,22 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
+    /**
+     *Actulizacion de los likes en la base de datos
+     * Puede contener 4 valores (DataState)
+     */
     private val mUpdateNLikesState: MutableLiveData<DataState<Boolean>> = MutableLiveData()
 
     val updateNLikesState: LiveData<DataState<Boolean>>
         get() = mUpdateNLikesState
 
-    fun updateNLikes(idService : String, newNum : Int){
+    /**
+     * Funcion que actualiza los likes de un servicio en la base de datos
+     * Utiliza updateNLikesUseCase para invocar la funcion del repositorio
+     * @param idService id del servicio
+     * @param newNum nuevo numero de likes
+     */
+    fun updateNLikes(idService: String, newNum: Int) {
         viewModelScope.launch {
             updateNLikesUseCase(idService, newNum)
                 .onEach { dataState ->
@@ -157,12 +266,22 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
+    /**
+     *Actualizacion del tiempo de edicion del servicio en la base de datos
+     * Puede contener 4 valores (DataState)
+     */
     private val mUpdateEditedTimeState: MutableLiveData<DataState<Boolean>> = MutableLiveData()
 
     val updateEditedTimeState: LiveData<DataState<Boolean>>
         get() = mUpdateEditedTimeState
 
-    fun updateEditedTime(idService : String, newEditedTime : String){
+    /**
+     * Funcion que actualiza el tiempo de edicion de un servicio en la base de datos
+     * Utiliza updateEditedTimeUseCase para invocar la funcion del repositorio
+     * @param idService id del servicio
+     * @param newEditedTime nueva fecha de edicion
+     */
+    fun updateEditedTime(idService: String, newEditedTime: String) {
         viewModelScope.launch {
             updateEditedTimeUseCase(idService, newEditedTime)
                 .onEach { dataState ->
@@ -171,28 +290,46 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
-
-
+    /**
+     *Estato de la elimnación de una imagen del servico en la base de datos
+     * Puede contener 4 valores (DataState)
+     */
     private val mRemoveImageUseCaseState: MutableLiveData<DataState<Boolean>> = MutableLiveData()
 
     val removeImageUseCaseState: LiveData<DataState<Boolean>>
         get() = mRemoveImageUseCaseState
 
-    fun removeImage(idService : String,index : Int,imgLink : String){
+    /**
+     * Funcion que elimina un imagen de un servicio en la base de datos
+     * Utiliza removeImageUseCase para invocar la funcion del repositorio
+     * @param idService id del servicio
+     * @param index indice de la imagen en la coleccion de imagenes del servicio
+     * @param imgLink link de la imagen
+     */
+    fun removeImage(idService: String, index: Int, imgLink: String) {
         viewModelScope.launch {
-            removeImageUseCase(idService,index,imgLink)
+            removeImageUseCase(idService, index, imgLink)
                 .onEach { dataState ->
                     mRemoveImageUseCaseState.value = dataState
                 }.launchIn(viewModelScope)
         }
     }
 
+    /**
+     * Estado de la eliminacion de un servicio de la base de datos
+     * Puede contener 4 valores (DataState)
+     */
     private val mRemoveServiceState: MutableLiveData<DataState<Boolean>> = MutableLiveData()
 
     val removeServiceState: LiveData<DataState<Boolean>>
         get() = mRemoveServiceState
 
-    fun removeService(idService : String){
+    /**
+     * Funcion que elimina un  servicio de la base de datos
+     * Utiliza removeServiceUseCase para invocar la funcion del repositorio
+     * @param idService id del servicio
+     */
+    fun removeService(idService: String) {
         viewModelScope.launch {
             removeServiceUseCase(idService)
                 .onEach { dataState ->
