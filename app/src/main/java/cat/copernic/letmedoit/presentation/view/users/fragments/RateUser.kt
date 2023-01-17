@@ -22,19 +22,17 @@ import cat.copernic.letmedoit.presentation.viewmodel.users.UserViewModel
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [RateUser.newInstance] factory method to
- * create an instance of this fragment.
+ * Fragment que infla y gestiona la pantalla para opinar sobre un usuario
+ * Utiliza el ViewModel para comunicarse con el repositorio (bd)
  */
 @AndroidEntryPoint
 class RateUser : Fragment() {
-    // TODO: Rename and change types of parameters
+
     private var param1: String? = null
     private var param2: String? = null
 
@@ -65,11 +63,17 @@ class RateUser : Fragment() {
         return binding.root
     }
 
+    /**
+     * Inicia los listeners
+     */
     private fun initListeners() {
         binding.saveBtn.setOnClickListener{ addOpinion() }
         binding.btnBack.setOnClickListener{ requireActivity().onBackPressed()}
     }
 
+    /**
+     * Publica la opinion del usuario
+     */
     private fun addOpinion() {
         val opinion = Opinion(
             userId = Constants.USER_LOGGED_IN_ID,
@@ -81,6 +85,9 @@ class RateUser : Fragment() {
         userViewModel.addOpinion(opinion,user.id)
     }
 
+    /**
+     * Inicia los observers que monitorizan el proceso de las operacions con la base de datos
+     */
     private fun initObservers() {
         userViewModel.addOpinionState.observe(viewLifecycleOwner, Observer { dataState ->
             when(dataState){
@@ -100,16 +107,27 @@ class RateUser : Fragment() {
         } )
     }
 
+    /**
+     * Oculta la animacion de carga
+     */
     private fun hideProgress(){
         binding.saveLoading.isVisible = false
         binding.saveBtn.isVisible = true
         binding.saveBtn.isEnabled = true
     }
+
+    /**
+     * Muestra la animacion de carga
+     */
     private fun showProgress(){
         binding.saveBtn.isVisible = false
         binding.saveBtn.isEnabled = false
         binding.saveLoading.isVisible = true
     }
+
+    /**
+     * Inicia la vista
+     */
     @SuppressLint("SetTextI18n")
     private fun initView() {
         if(user.avatar != "") Picasso.get().load(user.avatar).into(binding.iconUser)
@@ -117,15 +135,7 @@ class RateUser : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment rate_user.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             RateUser().apply {

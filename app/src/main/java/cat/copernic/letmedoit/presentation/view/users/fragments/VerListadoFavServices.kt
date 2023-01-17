@@ -26,9 +26,9 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [VerListadoFavServices.newInstance] factory method to
- * create an instance of this fragment.
+ * Fragment que infla y gestiona la pantalla de servicios favoritos de un usuario
+ * Muestra una lista de servicios favoritos del usuario iniciado.
+ * La lista es obtenida de la base de datos a travs de un ViewModel
  */
 @AndroidEntryPoint
 class VerListadoFavServices : Fragment() {
@@ -47,9 +47,13 @@ class VerListadoFavServices : Fragment() {
     private lateinit var binding: FragmentVerListadoFavServicesBinding
     private var totalFavServices = 0
     private var obtainedFavServices = 0
+    //Lista de servicios obtenidos
     private var services = ArrayList<Service>()
+
+    //ViewModels que comunican el fragment con los repositorios
     private val serviceViewModel : ServiceViewModel by viewModels()
     private val userViewModel : UserViewModel by viewModels()
+
     private lateinit var adapter : ServiceAdapter
 
     override fun onCreateView(
@@ -59,13 +63,16 @@ class VerListadoFavServices : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentVerListadoFavServicesBinding.inflate(inflater, container, false)
         //initRecyclerView()
+        //Obtener subcoleccion de servicios favoritos de labase de datos
         userViewModel.getFavoriteServices()
+        //Incia los observers que monitorizan el estado de las operacions con la base de datos
         initObservers()
         return binding.root
 
     }
 
     private fun initObservers() {
+        //Estado al obtener la subcoleccion de servicios favoritos
         userViewModel.getFavoriteServicesState.observe(viewLifecycleOwner, Observer { dataState ->
             when(dataState){
                 is DataState.Success<ArrayList<UserFavoriteServices>> -> {
@@ -86,6 +93,7 @@ class VerListadoFavServices : Fragment() {
                 else -> Unit
             }
         } )
+        //Estado al obtener un servico de la base de datos
         serviceViewModel.getServiceState.observe(viewLifecycleOwner, Observer { dataState ->
             when(dataState){
                 is DataState.Success<Service> -> {
@@ -102,6 +110,7 @@ class VerListadoFavServices : Fragment() {
                 else -> Unit
             }
         } )
+        //Estado al borrar un servico de la subcoleccion de la base de datos
         userViewModel.deleteFavoriteServiceState.observe(viewLifecycleOwner, Observer { dataState ->
             when(dataState){
                 is DataState.Success<Boolean> -> {
@@ -114,6 +123,7 @@ class VerListadoFavServices : Fragment() {
                 else -> Unit
             }
         } )
+        //Estado al añadir un servicio a la subcoleccion de servicios favoritos en la base de datos
         userViewModel.addFavoriteServiceState.observe(viewLifecycleOwner, Observer { dataState ->
             when(dataState){
                 is DataState.Success<Boolean> -> {
@@ -128,13 +138,23 @@ class VerListadoFavServices : Fragment() {
         } )
     }
 
+    /**
+     * Oculta la animacion de carga
+     */
     private fun hideProgress() {
         binding.loadingFavServices.isVisible = false
     }
 
+    /**
+     * Muestra la animacion de carga
+     */
     private fun showProgress() {
         binding.loadingFavServices.isVisible = true
     }
+
+    /**
+     * Inicia los recyclers views
+     */
     fun initRecyclerView(services: ArrayList<Service>) {
         services.forEach { it.defaultFav = true }
         hideProgress()

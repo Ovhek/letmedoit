@@ -56,9 +56,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [NewService.newInstance] factory method to
- * create an instance of this fragment.
+ * Fragment que infla y gestiona la pantalla para crear un nuevo servicio
  */
 @AndroidEntryPoint
 class NewService : Fragment() {
@@ -72,25 +70,33 @@ class NewService : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        getContent = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uriList -> managePhotosUri(uriList) }
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ permissions -> checkPermissions(permissions) }
+        getContent =
+            registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uriList ->
+                managePhotosUri(uriList)
+            }
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            checkPermissions(
+                permissions
+            )
+        }
 
     }
+
     var colum = arrayOf(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         READ_EXTERNAL_STORAGE
     )
     private val args: NewServiceArgs by navArgs()
-    private val serviceViewModel : ServiceViewModel by viewModels()
-    private val userViewModel : UserViewModel by viewModels()
-    private lateinit var service : Service
-    lateinit var getContent : ActivityResultLauncher<String>
-    lateinit var binding : FragmentNewServiceBinding
-    private val categoryViewModel : CreateCategoryViewModel by viewModels()
+    private val serviceViewModel: ServiceViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
+    private lateinit var service: Service
+    lateinit var getContent: ActivityResultLauncher<String>
+    lateinit var binding: FragmentNewServiceBinding
+    private val categoryViewModel: CreateCategoryViewModel by viewModels()
     private var editingImages = false
     private var editMode = false
-    private lateinit var categoryList : List<Category>
-    private lateinit var  categoryNameList : List<String>
+    private lateinit var categoryList: List<Category>
+    private lateinit var categoryNameList: List<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -98,12 +104,13 @@ class NewService : Fragment() {
     ): View? {
 
         // Inflate the layout for this fragment
-        binding = FragmentNewServiceBinding.inflate(inflater,container,false)
+        binding = FragmentNewServiceBinding.inflate(inflater, container, false)
         initListeners()
         categoryViewModel.getCategories()
 
-        if(findNavController().previousBackStackEntry?.destination?.label == "fragment_create_deal")
-            requireActivity().findViewById<BottomNavigationView>(R.id.menu_inferior).isVisible = false
+        if (findNavController().previousBackStackEntry?.destination?.label == "fragment_create_deal")
+            requireActivity().findViewById<BottomNavigationView>(R.id.menu_inferior).isVisible =
+                false
 
         initRecyclerView()
 
@@ -111,6 +118,9 @@ class NewService : Fragment() {
         return binding.root
     }
 
+    /**
+     * Inicia los listeners
+     */
     @SuppressLint("ClickableViewAccessibility")
     private fun initListeners() {
         binding.btnArrowBack.setOnClickListener { requireActivity().onBackPressed() }
@@ -121,31 +131,47 @@ class NewService : Fragment() {
             }
 
         })
-        binding.spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onNothingSelected(parent: AdapterView<*>?) {
+        binding.spinnerCategory.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+                /**
+                 * Ejecuta la funcion respectiva con el item del spiner pulsado
+                 */
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val subCategoryNames =
+                        categoryList[position].subcategories.map { it.nombre } as ArrayList<String>
+                    if (subCategoryNames.size <= 0) {
+                        binding.txtTitleSubcategory!!.visibility = View.GONE
+                        binding.containerSpinnerSubcategory.visibility = View.GONE
+                    } else {
+                        binding.txtTitleSubcategory!!.visibility = View.VISIBLE
+                        binding.containerSpinnerSubcategory.visibility = View.VISIBLE
+                    }
+                    Utils.AsignarPopUpSpinner(
+                        requireContext(),
+                        subCategoryNames,
+                        binding.spinnerSubcategory
+                    )
+                }
 
             }
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val subCategoryNames = categoryList[position].subcategories.map { it.nombre } as ArrayList<String>
-                if(subCategoryNames.size <= 0) {
-                    binding.txtTitleSubcategory!!.visibility = View.GONE
-                    binding.containerSpinnerSubcategory.visibility = View.GONE
-                }
-                else{
-                    binding.txtTitleSubcategory!!.visibility = View.VISIBLE
-                    binding.containerSpinnerSubcategory.visibility = View.VISIBLE
-                }
-                Utils.AsignarPopUpSpinner(requireContext(), subCategoryNames,binding.spinnerSubcategory)
-            }
-
-        }
         binding.btnAddImage.setOnClickListener { addImage() }
         binding.btnRemoveImage.setOnClickListener { removeImage() }
         binding.selectAll.setOnClickListener { selectAll() }
-        binding.btnSave.setOnClickListener{ saveService() }
+        binding.btnSave.setOnClickListener { saveService() }
     }
 
-
+    /**
+     * Inicia la vista con los datos del servicio correpondiente
+     */
     private fun initViewWithData(service: Service) {
         binding.btnArrowBack.visibility = View.VISIBLE
         editMode = true
@@ -153,14 +179,14 @@ class NewService : Fragment() {
         binding.editServiceTitle.setText(service.title)
         var categoryPos = 0
         var subCategoryPos = 0
-        for(i in 0 until binding.spinnerCategory.adapter.count){
-            if(binding.spinnerCategory.getItemAtPosition(i).equals(service.category.id_category)){
+        for (i in 0 until binding.spinnerCategory.adapter.count) {
+            if (binding.spinnerCategory.getItemAtPosition(i).equals(service.category.id_category)) {
                 categoryPos = i
                 break
             }
         }
-        for(i in 0 until binding.spinnerSubcategory.adapter.count){
-            if(binding.spinnerCategory.getItemAtPosition(i).equals(service.category.id_category)){
+        for (i in 0 until binding.spinnerSubcategory.adapter.count) {
+            if (binding.spinnerCategory.getItemAtPosition(i).equals(service.category.id_category)) {
                 subCategoryPos = i
                 break
             }
@@ -178,48 +204,74 @@ class NewService : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
     }
+
     var totalImagesEdited = 0
+
+    /**
+     * Inicia los obervers que monitorizan las operaciones con la base de datos
+     */
     private fun initObservers() {
         categoryViewModel.getCategoriesState.observe(viewLifecycleOwner, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<List<Category>> -> {
                     categoryList = dataState.data
                     val categoryNames = categoryList.map { it.nombre } as ArrayList<String>
-                    Utils.AsignarPopUpSpinner(requireContext(),categoryNames,binding.spinnerCategory)
-                    if(args.serviceID != "null")
+                    Utils.AsignarPopUpSpinner(
+                        requireContext(),
+                        categoryNames,
+                        binding.spinnerCategory
+                    )
+                    if (args.serviceID != "null")
                         serviceViewModel.getService(args.serviceID)
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                     hideProgress()
                 }
-                is DataState.Loading -> {  }
+                is DataState.Loading -> {}
                 else -> Unit
             }
-        } )
-        serviceViewModel.getServiceState.observe(viewLifecycleOwner,Observer { dataState ->
-            when(dataState){
+        })
+        serviceViewModel.getServiceState.observe(viewLifecycleOwner, Observer { dataState ->
+            when (dataState) {
                 is DataState.Success<Service> -> {
                     service = dataState.data
                     initViewWithData(service)
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                     hideProgress()
                 }
-                is DataState.Loading -> { binding.btnSave.isEnabled = false }
+                is DataState.Loading -> {
+                    binding.btnSave.isEnabled = false
+                }
                 else -> binding.btnSave.isEnabled = true
             }
         })
 
-        serviceViewModel.saveImageState.observe(viewLifecycleOwner,Observer { dataState ->
-            when(dataState){
+        serviceViewModel.saveImageState.observe(viewLifecycleOwner, Observer { dataState ->
+            when (dataState) {
                 is DataState.Success<String> -> {
-                    if(editMode) editImageSuccess(dataState.data)
+                    if (editMode) editImageSuccess(dataState.data)
                     else uploadImageSuccess(dataState.data)
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                     hideProgress()
                 }
                 is DataState.Loading -> {}
@@ -227,122 +279,177 @@ class NewService : Fragment() {
             }
         })
         serviceViewModel.updateTitleState.observe(viewLifecycleOwner, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<Boolean> -> {
-                    serviceViewModel.updateDescription(service.id,binding.editDescription.text.toString())
+                    serviceViewModel.updateDescription(
+                        service.id,
+                        binding.editDescription.text.toString()
+                    )
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                     hideProgress()
                 }
-                is DataState.Loading -> { showProgress() }
+                is DataState.Loading -> {
+                    showProgress()
+                }
                 else -> Unit
             }
-        } )
+        })
         serviceViewModel.updateDescriptionState.observe(viewLifecycleOwner, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<Boolean> -> {
-                    serviceViewModel.updateEditedTime(service.id,LocalDate.now().format(DateTimeFormatter.ofPattern(("dd-MM-yyyy"))))
+                    serviceViewModel.updateEditedTime(
+                        service.id,
+                        LocalDate.now().format(DateTimeFormatter.ofPattern(("dd-MM-yyyy")))
+                    )
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                     hideProgress()
                 }
                 is DataState.Loading -> {}
                 else -> Unit
             }
-        } )
+        })
         serviceViewModel.updateEditedTimeState.observe(viewLifecycleOwner, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<Boolean> -> {
-                    serviceViewModel.updateCategory(service.id, CategoryMap(binding.spinnerCategory.selectedItem.toString(),binding.spinnerSubcategory.selectedItem.toString()))
+                    serviceViewModel.updateCategory(
+                        service.id,
+                        CategoryMap(
+                            binding.spinnerCategory.selectedItem.toString(),
+                            binding.spinnerSubcategory.selectedItem.toString()
+                        )
+                    )
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                     hideProgress()
                 }
                 is DataState.Loading -> {}
                 else -> Unit
             }
-        } )
+        })
         serviceViewModel.updateCategoryState.observe(viewLifecycleOwner, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<Boolean> -> {
                     saveImages()
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                     hideProgress()
                 }
                 is DataState.Loading -> {}
                 else -> Unit
             }
-        } )
+        })
         serviceViewModel.saveServiceState.observe(viewLifecycleOwner, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<Service> -> {
                     userViewModel.addService(dataState.data.id)
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                     hideProgress()
                 }
-                is DataState.Loading -> { }
+                is DataState.Loading -> {}
                 else -> Unit
             }
-        } )
+        })
         serviceViewModel.removeImageUseCaseState.observe(viewLifecycleOwner, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<Boolean> -> {
                     removingImages = true
                     removeImageSuccess()
-                    if(!editingImages && !removingImages) requireActivity().onBackPressed()
+                    if (!editingImages && !removingImages) requireActivity().onBackPressed()
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                     hideProgress()
                 }
-                is DataState.Loading -> { }
+                is DataState.Loading -> {}
                 else -> Unit
             }
-        } )
+        })
 
         serviceViewModel.updateServiceImageState.observe(viewLifecycleOwner, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<String> -> {
                     editingImages = true
                     editImageSuccess(dataState.data)
-                    if(!editingImages && !removingImages) requireActivity().onBackPressed()
+                    if (!editingImages && !removingImages) requireActivity().onBackPressed()
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                     hideProgress()
                 }
-                is DataState.Loading -> { }
+                is DataState.Loading -> {}
                 else -> Unit
             }
-        } )
+        })
 
         userViewModel.addServiceState.observe(viewLifecycleOwner, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<Boolean> -> {
                     hideProgress()
-                    Utils.goToDestination(requireView(),R.id.homeFragment)
+                    Utils.goToDestination(requireView(), R.id.homeFragment)
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                     hideProgress()
                 }
-                is DataState.Loading -> { }
+                is DataState.Loading -> {}
                 else -> Unit
             }
-        } )
+        })
 
     }
 
 
-
-
+    /**
+     * Borra los campos del formulario
+     */
     private fun resetComponents() {
         binding.editDescription.setText("")
         binding.editServiceTitle.setText("")
@@ -352,12 +459,18 @@ class NewService : Fragment() {
         adapter.notifyDataSetChanged()
     }
 
+    /**
+     * Oculta la animacion de carga
+     */
     private fun hideProgress() {
         binding.btnSave.isEnabled = true
         binding.btnSave.text = resources.getString(R.string.save)
         binding.uploadServiceLoading.isVisible = false
     }
 
+    /**
+     * Muestra la animacion de carga
+     */
     private fun showProgress() {
         binding.btnSave.isEnabled = false
         binding.btnSave.text = ""
@@ -366,48 +479,77 @@ class NewService : Fragment() {
 
     private var imagesToEdit = 0
     private var imagesToDelete = 0
+
+    /**
+     * Gurda las imagenes seleccionadas para el servicio
+     */
     private fun saveImages() {
-        if(adapter.getItems().size == 0){
-            Utils.showOkDialog("Info:",requireContext(),resources.getString(R.string.noimageserror),requireActivity())
+        if (adapter.getItems().size == 0) {
+            Utils.showOkDialog(
+                "Info:",
+                requireContext(),
+                resources.getString(R.string.noimageserror),
+                requireActivity()
+            )
             return
         }
         var index = 0
-        if (args.serviceID != "null"){
-            val notUploadedImages = adapter.getItems().filter { it.img_link.contains("content://") }.toList()
+        if (args.serviceID != "null") {
+            val notUploadedImages =
+                adapter.getItems().filter { it.img_link.contains("content://") }.toList()
             imagesToEdit = notUploadedImages.size
             var lastID = adapter.getItems().filter { it.id.toInt() != 0 }.toList().last().id.toInt()
-            notUploadedImages.forEach{
+            notUploadedImages.forEach {
                 lastID++
-                serviceViewModel.editServiceImage(service.id,it.img_link.toUri(),lastID)
+                serviceViewModel.editServiceImage(service.id, it.img_link.toUri(), lastID)
             }
             val deletedImages = service.image.minus(adapter.getItems().toSet())
             imagesToDelete = deletedImages.size
-            deletedImages.forEach{
-                serviceViewModel.removeImage(service.id,it.id.toInt(),it.img_link)
+            deletedImages.forEach {
+                serviceViewModel.removeImage(service.id, it.id.toInt(), it.img_link)
                 totalImagesEdited--
             }
             return
-        }
-        else adapter.getItems().forEach {
-            serviceViewModel.saveImage(it.img_link.toUri(),idServiceRandom,index)
+        } else adapter.getItems().forEach {
+            serviceViewModel.saveImage(it.img_link.toUri(), idServiceRandom, index)
             index++
         }
 
     }
 
-    lateinit var idServiceRandom : String
+    lateinit var idServiceRandom: String
 
-    private fun isDataSet() : Boolean{
-        if(binding.editDescription.text.isNullOrEmpty()){
-            Utils.showOkDialog(resources.getString(R.string.error),requireContext(),resources.getString(R.string.nodescriptionerror),requireActivity())
+    /**
+     * Comprueva que los campos del formulario no esten vacios
+     * @return false en caso de estar vacios y muestra una dialogo que avisa al usuario
+     * @return true en caso de estar completos
+     */
+    private fun isDataSet(): Boolean {
+        if (binding.editDescription.text.isNullOrEmpty()) {
+            Utils.showOkDialog(
+                resources.getString(R.string.error),
+                requireContext(),
+                resources.getString(R.string.nodescriptionerror),
+                requireActivity()
+            )
             return false
         }
-        if(binding.editServiceTitle.text.isNullOrEmpty()){
-            Utils.showOkDialog(resources.getString(R.string.error),requireContext(),resources.getString(R.string.notitleerror),requireActivity())
+        if (binding.editServiceTitle.text.isNullOrEmpty()) {
+            Utils.showOkDialog(
+                resources.getString(R.string.error),
+                requireContext(),
+                resources.getString(R.string.notitleerror),
+                requireActivity()
+            )
             return false
         }
-        if(binding.listImages.size <= 0){
-            Utils.showOkDialog(resources.getString(R.string.error),requireContext(),resources.getString(R.string.noimageserror),requireActivity())
+        if (binding.listImages.size <= 0) {
+            Utils.showOkDialog(
+                resources.getString(R.string.error),
+                requireContext(),
+                resources.getString(R.string.noimageserror),
+                requireActivity()
+            )
             return false
         }
 
@@ -415,11 +557,14 @@ class NewService : Fragment() {
 
     }
 
+    /**
+     * Gurda el servicio
+     */
     private fun saveService() {
         if (!isDataSet())
             return
 
-        if(editMode) editService()
+        if (editMode) editService()
         else {
             idServiceRandom = UUID.randomUUID().toString()
             saveImages()
@@ -430,35 +575,50 @@ class NewService : Fragment() {
 
     var numImgUploaded = 0
     var imagesUploaded = ArrayList<Image>()
-    private fun uploadImageSuccess(uri : String){
-        imagesUploaded.add(Image(numImgUploaded.toString(),uri,numImgUploaded))
+
+    /**
+     * Sube una imagen
+     */
+    private fun uploadImageSuccess(uri: String) {
+        imagesUploaded.add(Image(numImgUploaded.toString(), uri, numImgUploaded))
         numImgUploaded++
-        if(numImgUploaded >= adapter.itemCount)
+        if (numImgUploaded >= adapter.itemCount)
             uploadService()
 
     }
 
     var numImgEdited = 0
     var imagesEdited = ArrayList<Image>()
-    private fun editImageSuccess(uri : String){
-        imagesEdited.add(Image(numImgEdited.toString(),uri))
+
+    /**
+     * Suben las nuevas imagenes
+     */
+    private fun editImageSuccess(uri: String) {
+        imagesEdited.add(Image(numImgEdited.toString(), uri))
         numImgUploaded++
-        if(numImgUploaded >= imagesToEdit) editingImages = false
+        if (numImgUploaded >= imagesToEdit) editingImages = false
     }
+
     var removingImages = false
     var numImagesRemoved = 0
     private fun removeImageSuccess() {
         numImagesRemoved++
-        if(numImagesRemoved >= imagesToDelete) removingImages = false
+        if (numImagesRemoved >= imagesToDelete) removingImages = false
     }
 
+    /**
+     * Edita el servicio
+     */
     private fun editService() {
         //Editamos utilizando los observadores, para poder saber el progreso total. Orden de edición: Titulo -> Descripción -> Fecha -> Categoria.
         //Por eso sale solo el updateTitle. Cuando se actualize el titulose actualizarán en el orden anterior.
-        serviceViewModel.updateTitle(service.id,binding.editServiceTitle.text.toString())
+        serviceViewModel.updateTitle(service.id, binding.editServiceTitle.text.toString())
     }
 
-    private fun uploadService(){
+    /**
+     * Sube el servico a la base de datos
+     */
+    private fun uploadService() {
         val subcategory = binding.spinnerSubcategory.selectedItem
         val subcategoryName = subcategory?.toString() ?: ""
         serviceViewModel.saveService(
@@ -466,7 +626,10 @@ class NewService : Fragment() {
                 id = idServiceRandom,
                 title = binding.editServiceTitle.text.toString(),
                 description = binding.editDescription.text.toString(),
-                category = CategoryMap(binding.spinnerCategory.selectedItem.toString(),subcategoryName),
+                category = CategoryMap(
+                    binding.spinnerCategory.selectedItem.toString(),
+                    subcategoryName
+                ),
                 image = imagesUploaded,
                 userid = Constants.USER_LOGGED_IN_ID,
                 edited_time = LocalDate.now().format(DateTimeFormatter.ofPattern(("dd-MM-yyyy")))
@@ -474,8 +637,12 @@ class NewService : Fragment() {
             )
         )
     }
+
     private var isAllSelected = false
 
+    /**
+     * Selecciona todas la imagenes
+     */
     private fun selectAll() {
         if (!isAllSelected) adapter.selectAll()
         else adapter.unselectAll()
@@ -483,16 +650,22 @@ class NewService : Fragment() {
         isAllSelected = !isAllSelected
     }
 
+    /**
+     * Borra las imagenes seleccionadas
+     */
     private fun removeImage() {
         adapter.removeItems()
         binding.selectAll.isChecked = false
 
     }
 
+    /**
+     * Actualiza el recycler view con las imagenes seleccionadas
+     */
     private fun managePhotosUri(uriList: List<Uri>?) {
         var num = 0
         uriList?.forEach {
-            imagesList.add(Image(num.toString(),it.toString(),num,false))
+            imagesList.add(Image(num.toString(), it.toString(), num, false))
             num++
         }
         adapter.notifyDataSetChanged()
@@ -500,41 +673,66 @@ class NewService : Fragment() {
 
     var storagePermission = false
     var cameraPermission = false
+
+    /**
+     * Comprueva si los persmidos para la camara y galeria estan dados,
+     * si no pedira los permisos al usuario
+     */
     private fun checkPermissions(permissions: Map<String, @JvmSuppressWildcards Boolean>) {
-        permissions.forEach{
-                actionMap -> when(actionMap.key){
-            CAMERA -> { cameraPermission = actionMap.value }
-            READ_EXTERNAL_STORAGE ->  { storagePermission = actionMap.value }
-        }
+        permissions.forEach { actionMap ->
+            when (actionMap.key) {
+                CAMERA -> {
+                    cameraPermission = actionMap.value
+                }
+                READ_EXTERNAL_STORAGE -> {
+                    storagePermission = actionMap.value
+                }
+            }
         }
     }
 
+    /**
+     * Añade una imagen
+     */
     private fun addImage() {
-        if((ActivityCompat.checkSelfPermission( requireContext(),colum[0])!= PackageManager.PERMISSION_GRANTED) &&
-            (ActivityCompat.checkSelfPermission( requireContext(),colum[1])!= PackageManager.PERMISSION_GRANTED)){
+        if ((ActivityCompat.checkSelfPermission(
+                requireContext(),
+                colum[0]
+            ) != PackageManager.PERMISSION_GRANTED) &&
+            (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                colum[1]
+            ) != PackageManager.PERMISSION_GRANTED)
+        ) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requireActivity().requestPermissions(colum,123)
+                requireActivity().requestPermissions(colum, 123)
             }
-        }
-        else{
+        } else {
             cameraPermission = true
             storagePermission = true
         }
-        if(cameraPermission && storagePermission){
+        if (cameraPermission && storagePermission) {
             openGallery()
         }
 
     }
 
+    /**
+     * Abre la galeria del dispositivo
+     */
     private fun openGallery() {
         getContent.launch("image/*")
     }
 
 
-    lateinit var imagesRecyclerView : RecyclerView
-    lateinit var adapter : ImagesAdapter
+    lateinit var imagesRecyclerView: RecyclerView
+    lateinit var adapter: ImagesAdapter
     var imagesList = ArrayList<Image>()
+
+    /**
+     * Inicializa el recycler view
+     */
     private fun initRecyclerView() {
         imagesRecyclerView = binding.listImages
         //LinearLayoutManager HORIZONTAL

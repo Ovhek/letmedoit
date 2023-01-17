@@ -11,7 +11,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import java.util.regex.Pattern
-
+/**
+ * Activity que infla y gestiona la pantalla para mandar el Email de recupera
+ * contraseña
+ */
 class RecoveryPassword_email : AppCompatActivity() {
     lateinit var binding: ActivityRecoveryPasswordEmailBinding
     lateinit var auth : FirebaseAuth
@@ -25,6 +28,11 @@ class RecoveryPassword_email : AppCompatActivity() {
         binding.btnBack.setOnClickListener { onBackPressed() }
     }
 
+    /**
+     * Confirma que el emil sea correcto.
+     * En caso de ser correcto envia el codigo al correo elctronico
+     * En caso contrario muestra un Toast avisando al usuario
+     */
     private fun checkEmail() {
         val email = binding.editEmail.text.toString().trim().lowercase()
         if(email.isEmpty()){
@@ -42,6 +50,10 @@ class RecoveryPassword_email : AppCompatActivity() {
         sendRecoveryCode(email)
     }
 
+    /**
+     * Envia el codigo al correo electronico
+     * @param email
+     */
     private fun sendRecoveryCode(email: String) {
         auth.sendPasswordResetEmail(email).addOnCompleteListener{ response ->
             if (!response.isSuccessful){

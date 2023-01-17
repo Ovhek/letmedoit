@@ -30,9 +30,8 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [UserReport.newInstance] factory method to
- * create an instance of this fragment.
+ * Fragment que infla y gestiona la pantalla para reportar a un usario
+ * Utiliza ViewModel para utilzar las funciones de los repositorios.
  */
 @AndroidEntryPoint
 class UserReport : Fragment() {
@@ -48,16 +47,19 @@ class UserReport : Fragment() {
         }
     }
 
-    lateinit var binding : FragmentUserReportBinding
+    lateinit var binding: FragmentUserReportBinding
     private val args: UserReportArgs by navArgs()
-    private val userViewModel : UserViewModel by viewModels()
-    private val reportViewModel : ReportsViewModel by viewModels()
+
+    //ViewModels que comunican  la vista con el repositorio (bd)
+    private val userViewModel: UserViewModel by viewModels()
+    private val reportViewModel: ReportsViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentUserReportBinding.inflate(inflater,container,false)
+        binding = FragmentUserReportBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -65,75 +67,133 @@ class UserReport : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userViewModel.getUser(args.userID)
+        //Iniciar listeners
         initListeners()
+        //Inicar obervers encargados de mostrar el estado de las operacions de los repositorios
         initObservers()
     }
 
-    private lateinit var user : Users
+    private lateinit var user: Users
+
+    /**
+     * Funcion que inicia los obsevers
+     * Monitoriza la insercion de reportes y lectura de usuarios de la base de datos
+     */
     private fun initObservers() {
         userViewModel.getUserState.observe(viewLifecycleOwner, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<Users?> -> {
                     dataState.data?.let { user = it }
                     initView()
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                 }
                 is DataState.Loading -> {
                 }
                 else -> Unit
             }
-        } )
+        })
         reportViewModel.createReportState.observe(viewLifecycleOwner, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<Boolean> -> {
-                    Utils.showOkDialog(resources.getString(R.string.reportinfo),requireContext(),resources.getString(R.string.userreportedtmsg),requireActivity())
+                    Utils.showOkDialog(
+                        resources.getString(R.string.reportinfo),
+                        requireContext(),
+                        resources.getString(R.string.userreportedtmsg),
+                        requireActivity()
+                    )
                     requireActivity().onBackPressed()
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                 }
-                is DataState.Loading -> { binding.btnReport.isEnabled = false }
+                is DataState.Loading -> {
+                    binding.btnReport.isEnabled = false
+                }
                 else -> Unit
             }
-        } )
+        })
     }
 
+    /**
+     * Inicia los listeners
+     */
     private fun initListeners() {
-        binding.reportUserBackArrow.setOnClickListener{ requireActivity().onBackPressed() }
-        binding.btnReport.setOnClickListener{ reportUser() }
+        binding.reportUserBackArrow.setOnClickListener { requireActivity().onBackPressed() }
+        binding.btnReport.setOnClickListener { reportUser() }
     }
 
+    /**
+     * Reporta a un usuario
+     */
     private fun reportUser() {
-        if(!isDataSet()) return
+        if (!isDataSet()) return
         reportViewModel.createReport(buildReport())
     }
 
+    /**
+     * Avisa al usuario mediante un dialogo si no ha elegido una razon para el reporte
+     */
     private fun isDataSet(): Boolean {
-        if(binding.reportReason.checkedRadioButtonId == -1){
-            Utils.showOkDialog(resources.getString(R.string.unfilledInfo),requireContext(),resources.getString(R.string.noreportreason),requireActivity())
+        if (binding.reportReason.checkedRadioButtonId == -1) {
+            Utils.showOkDialog(
+                resources.getString(R.string.unfilledInfo),
+                requireContext(),
+                resources.getString(R.string.noreportreason),
+                requireActivity()
+            )
             return false
         }
-        if(binding.editCommentText.text.toString().isBlank()){
-            Utils.showOkDialog(resources.getString(R.string.unfilledInfo),requireContext(),resources.getString(R.string.noreportcomment),requireActivity())
+        if (binding.editCommentText.text.toString().isBlank()) {
+            Utils.showOkDialog(
+                resources.getString(R.string.unfilledInfo),
+                requireContext(),
+                resources.getString(R.string.noreportcomment),
+                requireActivity()
+            )
             return false
         }
         return true
     }
 
+    /**
+     * Crea un reporte
+     * @return Report
+     */
     private fun buildReport(): Report {
-        var reasonId = when(binding.reportReason.checkedRadioButtonId){
+        var reasonId = when (binding.reportReason.checkedRadioButtonId) {
             R.id.report_misbehaviour -> 1
             R.id.report_fraud -> 2
             else -> 3
         }
-        return Report(UUID.randomUUID().toString(), UsersMap(Constants.USER_LOGGED_IN_ID,user.id),binding.editCommentText.text.toString(),reasonId,Constants.USER_LOGGED_IN.username,user.username,false)
+        return Report(
+            UUID.randomUUID().toString(),
+            UsersMap(Constants.USER_LOGGED_IN_ID, user.id),
+            binding.editCommentText.text.toString(),
+            reasonId,
+            Constants.USER_LOGGED_IN.username,
+            user.username,
+            false
+        )
     }
 
+    /**
+     * Inicia la configuracion de la vista
+     */
     @SuppressLint("SetTextI18n")
     private fun initView() {
-        if(user.avatar != "") Picasso.get().load(user.avatar).into(binding.userImage)
+        if (user.avatar != "") Picasso.get().load(user.avatar).into(binding.userImage)
 
         binding.userName.text = "${user.name} ${user.surname} \n @${user.username}"
     }

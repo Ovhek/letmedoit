@@ -19,6 +19,10 @@ import cat.copernic.letmedoit.databinding.FragmentViewFavUsersBinding
 import cat.copernic.letmedoit.presentation.viewmodel.users.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Fragmeng que infla y gestiona la pantalla de perfiles favoritos de un usuario
+ * Utiliza el UserViewModel para comunicarse con el repositorio
+ */
 @AndroidEntryPoint
 class viewFavUsers : Fragment() {
 
@@ -29,26 +33,42 @@ class viewFavUsers : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    private val userViewModel : UserViewModel by viewModels()
+    //ViewModel que comunica el repositorio con el fragment
+    private val userViewModel: UserViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentViewFavUsersBinding.inflate(inflater, container, false)
         //initRecyclerView()
+
+        //Leemos los perfiles favoritos el usuario de la base de datos
         userViewModel.getFavoriteProfiles()
+
+        //Inciamos los obervers que observan el estado de las operaciones con la base de datos
         initObservers()
         return binding.root
     }
 
+    //Numero de usuarios favoritos
     private var totalFavUsers = 0
+
+    //Numero de usuarios favoritos leidos de la abse de datos
     private var obtainedFavUsers = 0
+
+    //Lista de usurios favoritos
     private var users = ArrayList<Users>()
+
+    /**
+     * Inicia los obervers
+     */
     private fun initObservers() {
+        //Monitoriza el estado de lectura de los perfiles favortios de la base de datos
         userViewModel.getFavoriteProfilesState.observe(viewLifecycleOwner, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<ArrayList<UserFavoriteProfiles>> -> {
-                    if(::adapter.isInitialized) adapter.clear()
+                    if (::adapter.isInitialized) adapter.clear()
 
                     totalFavUsers = dataState.data.size
                     if (totalFavUsers == 0) hideProgress()
@@ -56,7 +76,12 @@ class viewFavUsers : Fragment() {
                     dataState.data.forEach { userViewModel.getUser(it.favorite_profile_id) }
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                     hideProgress()
                 }
                 is DataState.Loading -> {
@@ -64,55 +89,80 @@ class viewFavUsers : Fragment() {
                 }
                 else -> Unit
             }
-        } )
+        })
+        //Monitoriza el estado de lectura de un usuario de la base de datos
         userViewModel.getUserState.observe(viewLifecycleOwner, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<Users?> -> {
-                    if(dataState.data != null){
+                    if (dataState.data != null) {
                         users.add(dataState.data)
                         obtainedFavUsers++
                     }
-                    if(obtainedFavUsers == totalFavUsers) initRecyclerView(users)
+                    if (obtainedFavUsers == totalFavUsers) initRecyclerView(users)
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                     hideProgress()
                 }
                 is DataState.Loading -> {
                 }
                 else -> Unit
             }
-        } )
+        })
+        //Monitoriza el estado de elimnacion de un perfil de la subcoleccion de favoritos
+        //del usuario
         userViewModel.deleteFavoriteProfileState.observe(viewLifecycleOwner, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<Boolean> -> {
                 }
                 is DataState.Error -> {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}",requireContext(),dataState.exception.message.toString(),requireActivity())
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        requireContext(),
+                        dataState.exception.message.toString(),
+                        requireActivity()
+                    )
                 }
                 is DataState.Loading -> {
                 }
                 else -> Unit
             }
-        } )
+        })
     }
 
+    /**
+     *Oculta la animacion de carga
+     */
     private fun hideProgress() {
         binding.loadingFavUsers.isVisible = false
     }
 
+    /**
+     * Muestra la animacion de carga
+     */
     private fun showProgress() {
         binding.loadingFavUsers.isVisible = true
     }
 
-    fun deleteFavoriteProfile(idProfile : String){
+    /**
+     * Elimina un perfil de la subcoleccion de favoritos
+     */
+    fun deleteFavoriteProfile(idProfile: String) {
         userViewModel.deleteFavoriteProfile(idProfile)
     }
-    private lateinit var adapter : FavUsersAdapter
+
+
+    private lateinit var adapter: FavUsersAdapter
+    //Inicia el recycler view
     fun initRecyclerView(users: ArrayList<Users>) {
         hideProgress()
         binding.recyclerViewFavUser.layoutManager = GridLayoutManager(binding.root.context, 2)
-        adapter = FavUsersAdapter(users,this)
+        adapter = FavUsersAdapter(users, this)
         binding.recyclerViewFavUser.adapter = adapter
         obtainedFavUsers = 0
     }

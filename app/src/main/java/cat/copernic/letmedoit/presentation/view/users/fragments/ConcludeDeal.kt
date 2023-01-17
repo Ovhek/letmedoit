@@ -25,6 +25,10 @@ import cat.copernic.letmedoit.presentation.viewmodel.users.UserViewModel
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Fragment que infla y gestiona la pantalla para concluir un trato
+ * Utiliza el ViewModel para comunicarse con los repositorios corresponidentes
+ */
 @AndroidEntryPoint
 class concludeDeal : Fragment() {
 
@@ -66,6 +70,10 @@ class concludeDeal : Fragment() {
     private var goToOpinions = true
     private lateinit var myService: Service
     private lateinit var  hisService: Service
+
+    /**
+     * Inicia la vista
+     */
     @SuppressLint("SetTextI18n")
     private fun initView() {
         binding.concludeBtn.isVisible = true
@@ -87,6 +95,9 @@ class concludeDeal : Fragment() {
         dealViewModel.suscribeForUpdates(deal.id)
     }
 
+    /**
+     * Configura la vista segun los datos del trato
+     */
     private fun manageDealProgress(){
         binding.dealProgress.text =
             when(deal.conclude){
@@ -100,11 +111,17 @@ class concludeDeal : Fragment() {
                 || deal.conclude == 3)
     }
 
+    /**
+     * Lleva al usuario a la pantalla para dar una opinion tras finalizar el trato
+     */
     private fun goToAddOpinion(){
         val action  = concludeDealDirections.concludeDealToRateUser(user,hisService.id,deal.id)
         requireView().findNavController().navigate(action)
     }
 
+    /**
+     * Inicia los obsevers que monitorizan el proceso de las operaciones con la base de datos
+     */
     @SuppressLint("SetTextI18n")
     private fun initObservers() {
         serviceViewModel.getServiceState.observe(viewLifecycleOwner, Observer { dataState ->
@@ -183,6 +200,10 @@ class concludeDeal : Fragment() {
     }
 
     var firstDelete = true
+
+    /**
+     * Inicia los listeners
+     */
     private fun initListeners() {
         binding.btnBack.setOnClickListener { requireActivity().onBackPressed() }
         binding.seeMyService.setOnClickListener { goToViewService(myService) }
@@ -191,14 +212,23 @@ class concludeDeal : Fragment() {
         binding.denyConclude.setOnClickListener { cancelDeny() }
     }
 
+    /**
+     * Rechaza un trato
+     */
     private fun cancelDeny() {
         dealViewModel.deny(deal.id)
     }
 
+    /**
+     * Conluye un trato
+     */
     private fun dealConclude() {
         dealViewModel.conclude(deal.id)
     }
 
+    /**
+     * Lleva al usuario a la pantalla para ver el servicio del otro usuario
+     */
     private fun goToViewService(service: Service) {
         val action  = concludeDealDirections.actionConcludeDealToViewService(service)
         requireView().findNavController().navigate(action)

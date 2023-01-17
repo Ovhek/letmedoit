@@ -27,6 +27,11 @@ import cat.copernic.letmedoit.presentation.viewmodel.users.DealViewModel
 import cat.copernic.letmedoit.presentation.viewmodel.users.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Fragment que infla y gestiona la pantalla de tratos de un usuario
+ * Muestra una lista con todos los tratos del usuario logeado
+ * Utiliza ViewModel para comunicar vista repositorio
+ */
 @AndroidEntryPoint
 class verListadoDeals : Fragment() {
 
@@ -38,7 +43,7 @@ class verListadoDeals : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-
+    //ViewModels necesarios para la comunicacion con el repositorio
     private val userViewModel : UserViewModel by viewModels()
     private val dealViewModel : DealViewModel by viewModels()
     private val serviceViewModel : ServiceViewModel by viewModels()
@@ -55,17 +60,29 @@ class verListadoDeals : Fragment() {
         services.clear()
         _binding = FragmentVerListadoDealsBinding.inflate(inflater, container, false)
         userViewModel.getHistoryDeals()
+        //Iniciar observers que monitorizan el proceso de las operacions con la base de datos
         initObservers()
         return binding.root
     }
 
+    /**
+     * Inicia la configuracion de la vista.
+     * Principalmente incia el recycler view
+     */
     private fun initView() {
         initRecyclerView()
     }
 
+    /**
+     * Oculta la animacion de carga
+     */
     private fun hideProgress(){
         binding.loadingDeals.isVisible = false
     }
+
+    /**
+     * Muestra la animacion de carga
+     */
     private fun showProgress(){
         binding.loadingDeals.isVisible = true
     }
@@ -77,6 +94,14 @@ class verListadoDeals : Fragment() {
 
     private var historyDealsIndex = 0
     private var tempDeals = ArrayList<Deal>()
+
+    /**
+     * Funcion que inicializa los obervsers
+     * Monitoriza:
+     *  Lectura de tratos
+     *  Lectura de usuarios
+     *  Lectura de servicios
+     */
     private fun initObservers() {
         userViewModel.getHistoryDealsState.observe(viewLifecycleOwner, Observer { dataState ->
             when(dataState){
@@ -156,6 +181,9 @@ class verListadoDeals : Fragment() {
         } )
     }
 
+    /**
+     * Funcion que incializa el recycler view
+     */
     private fun initRecyclerView() {
         hideProgress()
         dealsRecyclerView = binding.recyclerViewListadoDeals
