@@ -29,15 +29,13 @@ import cat.copernic.letmedoit.presentation.viewmodel.general.ServiceViewModel
 import cat.copernic.letmedoit.presentation.viewmodel.users.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [HomeServicesList.newInstance] factory method to
- * create an instance of this fragment.
+ * Fragment que muestra los servicios de la base de datos en el home
+ * Utiliza el viewModel para comunicarse con el repositorio de servicios
  */
 @AndroidEntryPoint
 class HomeServicesList : Fragment() {
@@ -144,10 +142,16 @@ class HomeServicesList : Fragment() {
         })
     }
 
+    /**
+     * Oculta la barra de carga
+     */
     private fun hideProgress() {
         binding.loadingServices.isVisible = false
     }
 
+    /**
+     * Muestra la barra de carga mientras se leen los servicios de la base de datos
+     */
     private fun showProgress() {
         binding.loadingServices.isVisible = true
     }

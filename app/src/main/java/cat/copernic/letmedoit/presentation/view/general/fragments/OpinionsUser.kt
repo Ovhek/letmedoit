@@ -22,15 +22,12 @@ import cat.copernic.letmedoit.presentation.viewmodel.users.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [OpinionsUser.newInstance] factory method to
- * create an instance of this fragment.
+ * Fragment que muestra las opninones de un usuario
  */
 @AndroidEntryPoint
 class OpinionsUser(private val opinions: ArrayList<Opinion>) : Fragment() {
@@ -68,6 +65,9 @@ class OpinionsUser(private val opinions: ArrayList<Opinion>) : Fragment() {
         return binding.root
     }
 
+    /**
+     * Inicia los observers
+     */
     private fun initObservers() {
         userViewModel.getUserState.observe(viewLifecycleOwner, Observer { dataState ->
             when(dataState){
@@ -104,6 +104,9 @@ class OpinionsUser(private val opinions: ArrayList<Opinion>) : Fragment() {
         } )
     }
 
+    /**
+     * Inicia el recycelr view que muestra las opniones
+     */
     private fun initRecyclerView() {
 
         opinionsRecyclerView = binding.RecyclerOpinions

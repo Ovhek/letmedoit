@@ -30,15 +30,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [PerfilUsuarioMenuSuperior.newInstance] factory method to
- * create an instance of this fragment.
+ * Fragmen que muestra el menu superior de un perfil
  */
 @AndroidEntryPoint
 class PerfilUsuarioMenuSuperior : Fragment() {
@@ -103,7 +100,9 @@ class PerfilUsuarioMenuSuperior : Fragment() {
         return binding.root
     }
 
-
+    /**
+     * Inserta o elimna el perfil de favoritos
+     */
     private fun manageUserFavorite() {
         if (!isUserFav) userViewModel.addFavoriteProfile(args.userID)
         else userViewModel.deleteFavoriteProfile(args.userID)
@@ -111,12 +110,18 @@ class PerfilUsuarioMenuSuperior : Fragment() {
         manageFavIcon()
     }
 
+    /**
+     * Gestiona el icono de me gusta del perfil
+     */
     private fun manageFavIcon(){
         if (!isUserFav)binding.btnFavorites.background = ContextCompat.getDrawable(binding.root.context, R.drawable.favorites_ion_colored)
         else binding.btnFavorites.background = ContextCompat.getDrawable(binding.root.context, R.drawable.ic_round_favorite_24)
     }
     private lateinit var user : Users
 
+    /**
+     * Inicia los observers
+     */
     private fun initObservers() {
         userViewModel.getUserState.observe(viewLifecycleOwner, Observer { dataState ->
             when(dataState){
@@ -206,6 +211,9 @@ class PerfilUsuarioMenuSuperior : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
+    /**
+     * Inicia la vista
+     */
     private fun initView() {
 
 

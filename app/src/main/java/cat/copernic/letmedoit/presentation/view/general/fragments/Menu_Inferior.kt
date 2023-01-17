@@ -16,15 +16,12 @@ import cat.copernic.letmedoit.presentation.view.users.fragments.AccountOptionsDi
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+/**
+ * Fragment que muestra y gestiona el menu inferior del home
+ */
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-/**
- * A simple [Fragment] subclass.
- * Use the [Menu_Inferior.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class Menu_Inferior : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -83,11 +80,17 @@ class Menu_Inferior : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
+    /**
+     * Mostrar menu inferior
+     */
     private fun showBottomNav() {
         bottomNavigation.visibility = View.VISIBLE
 
     }
 
+    /**
+     * Ocultar menu inferior
+     */
     private fun hideBottomNav() {
         bottomNavigation.visibility = View.GONE
 

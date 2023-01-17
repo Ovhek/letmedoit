@@ -20,17 +20,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.collections.ArrayList
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 
-
 /**
- * A simple [Fragment] subclass.
- * Use the [FiltroCategorias.newInstance] factory method to
- * create an instance of this fragment.
+ * Fragment que infla y gestiona la pantalla del filtro de categorias
  */
 @AndroidEntryPoint
 class FiltroCategorias : Fragment() {
@@ -67,6 +63,9 @@ class FiltroCategorias : Fragment() {
     private lateinit var categoryList : List<Category>
     private lateinit var  categoryNameList : List<String>
 
+    /**
+     * Incializa los listeners
+     */
     private fun initListeners() {
         binding.backArrow.setOnClickListener { requireActivity().onBackPressed() }
         binding.btnDone.setOnClickListener{ applyFilter() }
@@ -83,12 +82,18 @@ class FiltroCategorias : Fragment() {
         }
     }
 
+    /**
+     * Aplica el filtro seleccionado por el usuario
+     */
     private fun applyFilter() {
         val action = FiltroCategoriasDirections
             .filterBackToHome(binding.spinnerOrderby.selectedItemPosition, Category(nombre = binding.spinnerCategory.selectedItem.toString(), subcategories = arrayListOf(Subcategory(nombre = binding.spinnerSubcategory.selectedItem.toString()))))
         Navigation.findNavController(requireView()).navigate(action)
     }
 
+    /**
+     * Inicaliza los observers
+     */
     private fun initObserver() {
         categoryViewModel.getCategoriesState.observe(viewLifecycleOwner, Observer { dataState ->
             when(dataState){

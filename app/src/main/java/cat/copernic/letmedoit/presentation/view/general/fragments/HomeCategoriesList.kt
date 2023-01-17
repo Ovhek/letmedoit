@@ -17,15 +17,13 @@ import cat.copernic.letmedoit.databinding.FragmentHomeCategoriesListBinding
 import cat.copernic.letmedoit.presentation.viewmodel.admin.CreateCategoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [HomeCategoriesList.newInstance] factory method to
- * create an instance of this fragment.
+ * Fragment que muestra las categorias en un recycer view horizontal
+ * Utiliza el ViewModel para comunicarse con el repositorio de categorias
  */
 @AndroidEntryPoint
 class HomeCategoriesList : Fragment(){
@@ -58,6 +56,9 @@ class HomeCategoriesList : Fragment(){
         return binding.root
     }
 
+    /**
+     * Inicia los observers
+     */
     private fun initObservers() {
         categoryViewModel.getCategoriesState.observe(viewLifecycleOwner, Observer { dataState ->
             when(dataState){

@@ -20,16 +20,13 @@ import cat.copernic.letmedoit.databinding.FragmentSearchViewBinding
 import cat.copernic.letmedoit.presentation.viewmodel.general.SearchViewViewModel
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+/**
+ * Fragment que gestiona los servicios filtrados por el buscador
+ */
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SearchView.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class SearchView : Fragment() {
 
     // TODO: Rename and change types of parameters
@@ -57,6 +54,9 @@ class SearchView : Fragment() {
         return binding.root
     }
 
+    /**
+     * Lleva a la pantalla de filtro
+     */
     private fun goToFilter() {
         val action  = HomeFragmentDirections.actionHomeFragmentToFiltroCategoria()
         requireView().findNavController().navigate(action)

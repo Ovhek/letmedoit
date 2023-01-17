@@ -37,17 +37,23 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.system.exitProcess
 
+/**
+ * Activity que carga todos los fragments del home y los gestiona
+ * Tambien se encarga de comprovar el tipo de usuario loegado y relizar las
+ * operacions correpondientes.
+ */
 @AndroidEntryPoint
 class Home : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
-    private val userViewModel : UserViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         //binding.loadingHome.isVisible = true
-        (supportFragmentManager.fragments[1] as Menu_Inferior).binding.menuInferior.isVisible = false
+        (supportFragmentManager.fragments[1] as Menu_Inferior).binding.menuInferior.isVisible =
+            false
         askPermissions()
 
         val currentUser = FirebaseModule.firebaseAuthProvider().currentUser
@@ -57,7 +63,12 @@ class Home : AppCompatActivity() {
             userViewModel.getUser(Constants.USER_LOGGED_IN_ID)
             FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
-                    Utils.showOkDialog("${resources.getString(R.string.error)}", this ,"Fetching FCM registration token failed ${task.exception}",this)
+                    Utils.showOkDialog(
+                        "${resources.getString(R.string.error)}",
+                        this,
+                        "Fetching FCM registration token failed ${task.exception}",
+                        this
+                    )
                     return@OnCompleteListener
                 }
 
@@ -66,27 +77,35 @@ class Home : AppCompatActivity() {
                 Constants.TOKEN = token
                 userViewModel.addDeviceToken(token)
             })
-        }
-        else{
-            binding.navController.getFragment<Fragment>().findNavController().setGraph(R.navigation.app_navigation_visitante)
+        } else {
+            binding.navController.getFragment<Fragment>().findNavController()
+                .setGraph(R.navigation.app_navigation_visitante)
         }
 
     }
 
+    /**
+     * Pregunta pos los permisos necesarios para la aplicacion
+     */
     private fun askPermissions() {
-        val permissions = ArrayList(arrayListOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-        ))
+        val permissions = ArrayList(
+            arrayListOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+            )
+        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(permissions.toTypedArray(),101)
+            requestPermissions(permissions.toTypedArray(), 101)
         }
     }
 
+    /**
+     * Inicializa los obervers
+     */
     private fun initObserver() {
         userViewModel.getUserState.observe(this, Observer { dataState ->
-            when(dataState){
+            when (dataState) {
                 is DataState.Success<Users?> -> {
                     val user = dataState.data
                     if (user != null) {
@@ -97,58 +116,78 @@ class Home : AppCompatActivity() {
                 is DataState.Error -> {
                     //Utils.showOkDialog("${resources.getString(R.string.error)}",this,dataState.exception.message.toString())
                 }
-                is DataState.Loading -> {  }
+                is DataState.Loading -> {}
                 else -> Unit
             }
-        } )
+        })
     }
 
-    //Dependiendo de si el usuario es admin, visitante o usuario, se utiliza un NavController u Otro.
-    private fun manageUserNavigation(currentUser : Users?){
+    /**
+     * Dependiendo de si el usuario es admin, visitante o usuario, se utiliza un NavController u Otro.
+     */
+    private fun manageUserNavigation(currentUser: Users?) {
 
-        if(currentUser == null) {
-            binding.navController.getFragment<Fragment>().findNavController().setGraph(R.navigation.app_navigation_visitante)
+        if (currentUser == null) {
+            binding.navController.getFragment<Fragment>().findNavController()
+                .setGraph(R.navigation.app_navigation_visitante)
             return
         }
 
         //Usuario baneado
-        if(currentUser.banned){
-            startActivity(Intent(this,UserBanned::class.java))
+        if (currentUser.banned) {
+            startActivity(Intent(this, UserBanned::class.java))
             finish()
         }
         //Usuario admin
-        if(currentUser.admin){
+        if (currentUser.admin) {
             startActivity(Intent(this, MenuAdmin::class.java))
             finish()
         }
         //Usuario logeado
-        else{
-            binding.navController.getFragment<Fragment>().findNavController().setGraph(R.navigation.app_navigation_leogeado)
+        else {
+            binding.navController.getFragment<Fragment>().findNavController()
+                .setGraph(R.navigation.app_navigation_leogeado)
         }
         (supportFragmentManager.fragments[1] as Menu_Inferior).binding.menuInferior.isVisible = true
         //binding.loadingHome.isVisible = false
     }
-    //Control para volver hacia atras en los recyclerviews, si el destino actual es la primera pantalla no vuelve hacia atras
+
+    /**
+     * Control para volver hacia atras en los recyclerviews, si el destino actual es la primera pantalla no vuelve hacia atras
+     */
     override fun onBackPressed() {
         val currentDestination = binding.navController.findNavController().currentDestination
-        val sourceDestination = binding.navController.findNavController().previousBackStackEntry?.destination
+        val sourceDestination =
+            binding.navController.findNavController().previousBackStackEntry?.destination
         if (currentDestination != null) {
-            if(sourceDestination!=null){
-                if(sourceDestination.label == "fragment_home"){
-                    if(currentDestination.label == "fragment_ver_conversaciones") return
-                    if(currentDestination.label == "fragment_profiles_services_manager_vis") return
-                    if(currentDestination.label == "fragment_new_service") return
-                    if(currentDestination.label == "fragment_opciones_de_cuenta") return
+            if (sourceDestination != null) {
+                if (sourceDestination.label == "fragment_home") {
+                    if (currentDestination.label == "fragment_ver_conversaciones") return
+                    if (currentDestination.label == "fragment_profiles_services_manager_vis") return
+                    if (currentDestination.label == "fragment_new_service") return
+                    if (currentDestination.label == "fragment_opciones_de_cuenta") return
                 }
-                if(currentDestination.label == "fragment_conclude_deal" && sourceDestination.label == "fragment_ver_conversaciones") findNavController(R.id.navController).navigate(R.id.verConversaciones)
-                if(currentDestination.label == "fragment_conclude_deal" && sourceDestination.label == "fragment_ver_deal") findNavController(R.id.navController).navigate(R.id.verConversaciones)
-                if(currentDestination.label == "fragment_ver_conversaciones" && sourceDestination.label == "fragment_ver_deal") return
-                if(currentDestination.label == "fragment_ver_conversaciones" && sourceDestination.label == "fragment_conclude_deal") return
+                if (currentDestination.label == "fragment_conclude_deal" && sourceDestination.label == "fragment_ver_conversaciones") findNavController(
+                    R.id.navController
+                ).navigate(R.id.verConversaciones)
+                if (currentDestination.label == "fragment_conclude_deal" && sourceDestination.label == "fragment_ver_deal") findNavController(
+                    R.id.navController
+                ).navigate(R.id.verConversaciones)
+                if (currentDestination.label == "fragment_ver_conversaciones" && sourceDestination.label == "fragment_ver_deal") return
+                if (currentDestination.label == "fragment_ver_conversaciones" && sourceDestination.label == "fragment_conclude_deal") return
             }
-            if(currentDestination.label == "fragment_rate_user") findNavController(R.id.navController).navigate(R.id.verConversaciones)
-            if(currentDestination.label == "fragment_conclude_deal") findNavController(R.id.navController).navigate(R.id.verConversaciones)
-            if(currentDestination.label == "fragment_rate_user") findNavController(R.id.navController).navigate(R.id.verConversaciones)
-            if(currentDestination.label == "fragment_ver_deal") findNavController(R.id.navController).navigate(R.id.verConversaciones)
+            if (currentDestination.label == "fragment_rate_user") findNavController(R.id.navController).navigate(
+                R.id.verConversaciones
+            )
+            if (currentDestination.label == "fragment_conclude_deal") findNavController(R.id.navController).navigate(
+                R.id.verConversaciones
+            )
+            if (currentDestination.label == "fragment_rate_user") findNavController(R.id.navController).navigate(
+                R.id.verConversaciones
+            )
+            if (currentDestination.label == "fragment_ver_deal") findNavController(R.id.navController).navigate(
+                R.id.verConversaciones
+            )
             else if ((currentDestination.id
                     ?: -1) != R.id.homeFragment
             ) findNavController(R.id.navController).popBackStack()
