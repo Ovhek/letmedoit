@@ -7,7 +7,33 @@ import com.google.firebase.firestore.Exclude
 import kotlinx.parcelize.Parcelize
 import java.util.*
 import kotlin.collections.ArrayList
-
+/**
+ * Una clase de datos que representa un usuario.
+ *
+ * @param id el id único del usuario generado con UUID.randomUUID().toString().
+ * @param name el nombre del usuario.
+ * @param surname el apellido del usuario.
+ * @param email el correo electrónico del usuario.
+ * @param language el idioma seleccionado por el usuario.
+ * @param darkTheme el tema oscuro seleccionado por el usuario.
+ * @param avatar el avatar del usuario.
+ * @param curriculum el curriculum del usuario.
+ * @param schedule el horario del usuario.
+ * @param aboutMe información adicional del usuario.
+ * @param contactInfo la información de contacto del usuario.
+ * @param location la ubicación del usuario.
+ * @param servicesId los id de los servicios del usuario.
+ * @param favorites los favoritos del usuario.
+ * @param chatsId los id de las conversaciones del usuario.
+ * @param historyDeals el historial de tratos del usuario.
+ * @param opinions las opiniones del usuario.
+ * @param check el estado de revisión del usuario.
+ * @param rating la calificación promedio del usuario.
+ * @param banned el estado de prohibición del usuario.
+ * @param admin si el usuario es administrador o no.
+ * @param username el nombre de usuario del usuario.
+ * @param deviceToken el token del dispositivo del usuario.
+ */
 @Keep
 @Parcelize
 data class Users(

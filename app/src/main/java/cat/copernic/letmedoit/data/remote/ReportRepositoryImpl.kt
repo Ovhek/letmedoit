@@ -16,11 +16,21 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
+/**
+ * Clase que implementa la interfaz ReportRepository que permite conectarse a la base de datos remota de Firebase y realizar operaciones de CRUD con los reportes.
+ * Utiliza la librería de coroutines de Kotlin para manejar operaciones asíncronas y emitir flujos de datos (flow) para informar el estado de las operaciones.
+ *
+ * @param reportsCollection referencia a la colección de reportes en la base de datos de Firebase. Inyectado mediante la anotación.
+ *
+ */
 class ReportRepositoryImpl @Inject constructor(
     @FirebaseModule.ReportsCollection val reportsCollection: CollectionReference
 ) : ReportRepository {
 
 
+    /**
+     * Obtiene el listado de reportes de la base de datos.
+     */
     override suspend fun getReports(): Flow<DataState<List<Report>>> =
         flow<DataState<List<Report>>> {
             emit(DataState.Loading)
@@ -35,6 +45,10 @@ class ReportRepositoryImpl @Inject constructor(
             }
         }.flowOn(Dispatchers.IO)
 
+    /**
+     * Crea un reporte en la base de datos.
+     * @param report reporte a añadir en la base de datos.
+     */
     override suspend fun createReport(report: Report): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -53,6 +67,10 @@ class ReportRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Elimina un reporte de la base de datos.
+     * @param reportId id del reporte a eliminar,
+     */
     override suspend fun deleteReport(reportId: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {

@@ -5,8 +5,19 @@ import cat.copernic.letmedoit.domain.repositories.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+/**
+ * Clase para el caso de actualizar el idioma del usuario
+ * @constructor Inyecta una instancia del repositorio de usuarios
+ * @property userRepository el repositorio de usuarios para realizar la operación.
+ */
+
 class UpdateLanguageUseCase @Inject constructor(
     private val userRepository: UserRepository
 ){
+    /**
+     * Método para invocar el caso de actualizar el idioma del usuario
+     * @param language nuevo valor del idioma del usuario
+     * @return un flujo de datos que indica el estado de la operación (success, error, loading) y el resultado de la misma
+     * */
     suspend operator fun invoke(language : Int) : Flow<DataState<Boolean>> = userRepository.updateLanguage(language)
 }

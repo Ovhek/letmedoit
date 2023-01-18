@@ -5,6 +5,7 @@ import cat.copernic.letmedoit.domain.repositories.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+
 class AddFavoriteServiceUseCase @Inject constructor(
     private val userRepository: UserRepository
 ){

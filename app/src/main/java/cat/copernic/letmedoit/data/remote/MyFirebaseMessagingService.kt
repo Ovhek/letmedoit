@@ -10,9 +10,14 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
 /**
- * Clase Encargada de manjear las notificaciones de Firebase
+ * Clase Encargada de manjear las notificaciones de Firebase. Permite mostrar las notificaciones aunque la app esté en segundo plano.
  */
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+
+    /**
+     * Función que se ejecuta añ recibir un mensaje de notificacion de firebase.
+     * @param message Mensahe recibido.
+     */
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 

@@ -152,6 +152,7 @@
             <TextView
                 android:id="@+id/btn_add_image"
                 style="@style/IconoClickable"
+                android:contentDescription="@string/add_image"
                 android:layout_width="@dimen/dimen_newService_width"
                 android:layout_height="@dimen/dimen_newService_width"
                 android:layout_marginTop="@dimen/marginTop_extra"
@@ -162,6 +163,7 @@
 
             <TextView
                 android:id="@+id/btn_remove_image"
+                android:contentDescription="@string/remove_image"
                 style="@style/IconoClickable"
                 android:layout_width="@dimen/dimen_newService_width"
                 android:layout_height="@dimen/dimen_newService_width"
@@ -173,6 +175,7 @@
 
             <CheckBox
                 android:id="@+id/select_all"
+                android:contentDescription="@string/select_all"
                 style="@style/Widget.LetMeDoIt.CheckBox"
                 android:layout_width="48dp"
                 android:layout_height="48dp"

@@ -8,6 +8,16 @@ import com.google.firebase.firestore.Exclude
 import kotlinx.parcelize.Parcelize
 import java.util.UUID
 
+/**
+ * Una clase de datos que representa un trato.
+ *
+ * @param id el id único del trato.
+ * @param users los usuarios del trato.
+ * @param services los servicios del trato.
+ * @param description la descripción del trato.
+ * @param accepted el estado del trato.
+ * @param conclude la conclusión del trato.
+ */
 @Keep
 @Parcelize
 data class Deal(

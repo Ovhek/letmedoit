@@ -16,12 +16,23 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-
+/**
+ * Clase que implementa la interfaz CategoryRepository que permite conectarse a la base de datos remota de Firebase y realizar operaciones CRUD en las categorías y subcategorías.
+ * Utiliza la librería de coroutines de Kotlin para manejar operaciones asíncronas y emitir flujos de datos (flow) para informar el estado de las operaciones.
+ *
+ * @param categoryCollection referencia a la colección de categorías en la base de datos de Firebase. Inyectado mediante la anotación @FirebaseModule.CategoryCollection.
+ *
+ */
 class CategoryRepositoryImpl @Inject constructor(
     @FirebaseModule.CategoryCollection val categoryCollection: CollectionReference
 ) : CategoryRepository {
 
 
+    /**
+     * Actualiza el nombre de la categoría.
+     * @param idCategory id de la categoría.
+     * @param newNombre nuevo nombre mediante el cual se actualizará la categoría.
+     */
     override suspend fun updateNombre(
         idCategory: String,
         newNombre: String
@@ -43,6 +54,11 @@ class CategoryRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Obtiene las subcategorías de una categoria dada.
+     *
+     * @param category la categoria de la cual se quieren obtener las subcategorías.
+     */
     suspend fun getSubCat(category: Category) {
         val ref =
             categoryCollection.document(category.id).collection(CategoryConstants.SUBCAT).get()
@@ -52,6 +68,11 @@ class CategoryRepositoryImpl @Inject constructor(
         category.subcategories.addAll(subcategories)
     }
 
+    /**
+     * Actualiza la descripción de la categoría.
+     * @param idCategory la id de la categoría a actualizar.
+     * @param newDescription nuevo valor de la descripción.
+     */
     override suspend fun updateDescription(
         idCategory: String,
         newDescription: String
@@ -74,6 +95,10 @@ class CategoryRepositoryImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
+    /**
+     * Inserta una categoría en la base de datos.
+     * @param category categoría a insertar en la base de datos.
+     */
     override suspend fun insertCategory(category: Category): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -94,6 +119,11 @@ class CategoryRepositoryImpl @Inject constructor(
         }
     }.flowOn(IO)
 
+    /**
+     * Inserta una subcategoría en una categoría.
+     * @param categoryId id de la categoría donde insertar.
+     * @param subcategory subcategoría a insertar.
+     */
     override suspend fun insertSubcategory(
         categoryId: String,
         subcategory: Subcategory
@@ -114,6 +144,9 @@ class CategoryRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Obtiene las categorias de la base de datos
+     */
     override suspend fun getCategories(): Flow<DataState<List<Category>>> = flow {
         emit(DataState.Loading)
         try {
@@ -129,6 +162,10 @@ class CategoryRepositoryImpl @Inject constructor(
         }
     }.flowOn(IO)
 
+    /**
+     * Elimina una categoría de la base de datos
+     * @param id Id de la categoría a eliminar.
+     */
     override suspend fun deleteCategory(id: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -146,6 +183,11 @@ class CategoryRepositoryImpl @Inject constructor(
         }
     }.flowOn(IO)
 
+    /**
+     * Elimina una subcategoría de una categoría en la base de datos.
+     * @param categoryId id de la categoría donde eliminar.
+     * @param subcategoryId id de la subcategoría a eliminar.
+     */
     override suspend fun deleteSubcategory(
         categoryId: String,
         subcategoryId: String

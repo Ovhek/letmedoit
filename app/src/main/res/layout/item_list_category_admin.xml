@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/item_category_name_marginBottom"
                     android:text="@string/informatica"
-                    android:textSize="@dimen/dieciseis_dp" />
+                    android:textSize="@dimen/text_size" />
 
                 <TextView
                     android:id="@+id/txt_subcategory_number"
@@ -66,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/item_category_subcategoy_number_marginBottom"
                     android:text="@string/uno_text"
-                    android:textSize="@dimen/doce_sp" />
+                    android:textSize="@dimen/subtext_size" />
 
             </LinearLayout>
 

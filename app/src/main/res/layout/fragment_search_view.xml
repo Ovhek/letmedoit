@@ -13,6 +13,7 @@
 
         <SearchView
             android:id="@+id/searchView"
+            android:importantForAccessibility="no"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/divider_16dp_margin_top"
@@ -27,8 +28,9 @@
 
         <TextView
         android:id="@+id/iconFilter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/margins_start_end_extra_plus"
+        android:contentDescription="@string/filter"
+        android:layout_height="@dimen/margins_start_end_extra_plus"
         android:layout_marginStart="@dimen/padding_vertical_start_end_8"
         android:background="@drawable/filter_icon"
         android:clickable="true"
@@ -40,8 +42,9 @@
 
         <TextView
             android:id="@+id/clearFilters"
-            android:layout_width="@dimen/icon_category_wh"
-            android:layout_height="@dimen/icon_category_wh"
+            android:contentDescription="@string/clear_filter"
+            android:layout_width="@dimen/margins_start_end_extra_plus"
+            android:layout_height="@dimen/margins_start_end_extra_plus"
             android:visibility="gone"
             android:layout_marginStart="@dimen/padding_vertical_start_end_8"
             android:background="@drawable/close_icon"

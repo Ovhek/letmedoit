@@ -5,8 +5,18 @@ import cat.copernic.letmedoit.domain.repositories.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+/**
+ * Clase para el caso de eliminar la foto de avatar del usuario del storage
+ * @constructor Inyecta una instancia del repositorio de usuarios
+ * @property userRepository el repositorio de usuarios para realizar la operación.
+ */
 class DeleteAvatarFromStorageUseCase @Inject constructor(
     private val userRepository: UserRepository
 ){
+    /**
+     * Método para invocar el caso de eliminar la foto de avatar del usuario del storage
+     * @param imgLink dirección de la imagen a eliminar
+     * @return un flujo de datos que indica el estado de la operación (success, error, loading) y el resultado de la misma
+     * */
     suspend operator fun invoke(imgLink : String) : Flow<DataState<Boolean>> = userRepository.deleteAvatarFromStorage(imgLink)
 }

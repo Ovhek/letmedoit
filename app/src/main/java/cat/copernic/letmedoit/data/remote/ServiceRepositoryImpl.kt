@@ -20,11 +20,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.tasks.await
 
+/**
+ * Clase que implementa la interfaz ServiceRepository que permite conectarse a la base de datos remota de Firebase y realizar operaciones CRUD en los servicios.
+ * Utiliza la librería de coroutines de Kotlin para manejar operaciones asíncronas y emitir flujos de datos (flow) para informar el estado de las operaciones.
+ *
+ * @param serviceCollection referencia a la colección de servicios en la base de datos de Firebase. Inyectado mediante la anotación.
+ *
+ */
 class ServiceRepositoryImpl @Inject constructor(
     private val storage: FirebaseStorage,
     @FirebaseModule.ServiceCollection private val serviceCollection: CollectionReference
 ) : ServiceRepository {
 
+    /**
+     * Función encargada de guardar un servicio en la base de datos.
+     *
+     * @param service Servicio a guardar.
+     */
     override suspend fun saveService(service: Service): Flow<DataState<Service>> = flow {
         emit(DataState.Loading)
         try {
@@ -54,6 +66,10 @@ class ServiceRepositoryImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
+    /**
+     * Obtiene el servicio especificado.
+     * @param uid id del servicio a obtener.
+     */
     override suspend fun getService(uid: String): Flow<DataState<Service>> = flow {
         emit(DataState.Loading)
         try {
@@ -73,6 +89,9 @@ class ServiceRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Obtiene todos los servicios de la base de datos.
+     */
     override suspend fun getAllServices(): Flow<DataState<List<Service>>> = flow {
         emit(DataState.Loading)
         try {
@@ -98,6 +117,12 @@ class ServiceRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Elimina una imagen del storage de la base de datos.
+     * @param idService id del servicio donde esta la imagen.
+     * @param imgIdService indice de la imagen a eliminar.
+     * @param imgLink Dirrección URL de la imagen en storage.
+     */
     override suspend fun removeImage(idService: String, imgIndex: Int,imgLink : String): Flow<DataState<Boolean>> = flow {
         var isSuccessful = false
         emit(DataState.Loading)
@@ -126,6 +151,10 @@ class ServiceRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Elimina un servicio de la base de datos.
+     * @param idService id del servicio a eliminar.
+     */
     override suspend fun removeService(idService: String): Flow<DataState<Boolean>> = flow{
         var isSuccessful = false
         emit(DataState.Loading)
@@ -153,6 +182,10 @@ class ServiceRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Obtiene las imagenes del servicio.
+     * @param service servicio del cual obtener las imagenes.
+     */
     suspend fun getServiceImages(service: Service) {
         val ref = serviceCollection.document(service.id).collection(ServiceConstants.IMAGES).orderBy("index").get().await()
         val images = ref.toObjects(Image::class.java)
@@ -164,6 +197,11 @@ class ServiceRepositoryImpl @Inject constructor(
         service.image.addAll(images)
     }
 
+    /**
+     * Actualiza el titulo de un servicio.
+     * @param idService id del servicio a actualizar,
+     * @param newTitle nuevo valor del titulo.
+     */
     override suspend fun updateTitle(
         idService: String,
         newTitle: String
@@ -185,6 +223,12 @@ class ServiceRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Actualiza la descripción de un servicio.
+     *
+     * @param idService id del servicio a actualizar.
+     * @param newDescription nuevo valor de la descripción.
+     */
     override suspend fun updateDescription(
         idService: String,
         newDescription: String
@@ -206,6 +250,12 @@ class ServiceRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Actualiza la categoría de un servicio.
+     *
+     * @param idService id del servicio.
+     * @param newDescription nuevo valor de la categoría de un servicio.
+     */
     override suspend fun updateCategory(
         idService: String,
         newCategoryMap: CategoryMap
@@ -227,6 +277,12 @@ class ServiceRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Actualiza los favoritos de un servicio.
+     *
+     * @param idService id del servicio.
+     * @param newNum nuevo valor de favoritos de un servicio.
+     */
     override suspend fun updateNLikes(idService: String, newNum: Int): Flow<DataState<Boolean>> =
         flow {
             emit(DataState.Loading)
@@ -246,6 +302,12 @@ class ServiceRepositoryImpl @Inject constructor(
             }
         }.flowOn(Dispatchers.IO)
 
+    /**
+     * Actualiza el último tiempo de edición del servicio.
+     *
+     * @param idService id del servicio a actualizar.
+     * @param newEditedTime Nuevo valor de la fecha de edición.
+     */
     override suspend fun updateEditedTime(
         idService: String,
         newEditedTime: String
@@ -267,6 +329,13 @@ class ServiceRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Actualiza las images de un servicio.
+     *
+     * @param idService id del servicio a actualizar.
+     * @param newFile Nueva dirección de la imagen
+     * @param index indice de la imagen a actualizar.
+     */
     override suspend fun editServiceImage(
         idService : String,newFileURI : Uri, index: Int
     ): Flow<DataState<String>> = flow {
@@ -300,28 +369,15 @@ class ServiceRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    private suspend fun deleteServiceImage(oldFileUri: String): Boolean {
-        var isSuccessful = false
-        val sRef: StorageReference =
-            FirebaseModule.storageProvider().getReferenceFromUrl(oldFileUri)
-
-        try {
-            sRef.delete()
-                .addOnSuccessListener {
-                    isSuccessful = true
-                }
-                .addOnFailureListener {
-                    throw Exception(it)
-                }
-                .await()
-        } catch (e: Exception) {
-            isSuccessful = false
-        }
-        return isSuccessful
-    }
-
     lateinit var uri: String
 
+    /**
+     * Guarda la imagen de un servicio.
+     *
+     * @param fileURI dirección de la imagen.
+     * @param serviceId Id del servicio a actualizar.
+     * @param index Indice de la imagen.
+     */
     override suspend fun saveServiceImage(
         fileURI: Uri,
         serviceId: String,

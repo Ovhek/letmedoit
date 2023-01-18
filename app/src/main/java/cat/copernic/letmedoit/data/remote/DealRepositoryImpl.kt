@@ -21,10 +21,21 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
+/**
+ * Clase que implementa la interfaz DealRepository que permite conectarse a la base de datos remota de Firebase y realizar operaciones CRUD en los tratos
+ * Utiliza la librería de coroutines de Kotlin para manejar operaciones asíncronas y emitir flujos de datos (flow) para informar el estado de las operaciones.
+ *
+ * @param dealCollection referencia a la colección de tratos en la base de datos de Firebase. Inyectado mediante la anotación.
+ *
+ */
 class DealRepositoryImpl @Inject constructor(
     @FirebaseModule.DealCollection val dealCollection: CollectionReference
 ) : DealRepository {
 
+    /**
+     * Inserta un trato en la base de datos de Firebase,
+     * @param deal trato a insertar.
+     */
     override suspend fun insertDeal(deal: Deal): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -45,6 +56,10 @@ class DealRepositoryImpl @Inject constructor(
 
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Cancela y borra un trato de la base de datos de Firebase.
+     * @param id id del trato a cancelar.
+     */
     override suspend fun denyDeal(id: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -64,6 +79,10 @@ class DealRepositoryImpl @Inject constructor(
 
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Cambia el estado del trato de la base de datos a "accepted".
+     * @param idDeal id del trato el cual aceptar.
+     */
     override suspend fun acceptDeal(idDeal: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -84,6 +103,14 @@ class DealRepositoryImpl @Inject constructor(
 
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Función encargada de conluir el trato. Actualiza el estado según:
+     * - 0: Nadie ha concluido el trato.
+     * - 1: El usuario 1 ha concluido el trato.
+     * - 2: El usuario 2 ha concluido el trato.
+     * - 3: Los dos usuarios han conlcuido el trato.
+     * @param id id del trato a actualizar su estado.
+     */
     override suspend fun concludeDeal(id: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -117,6 +144,10 @@ class DealRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Devuelve el trato especifico con la id pasada.
+     * @param id del trato a obtener.
+     */
     override suspend fun getDeal(id: String): Flow<DataState<Deal>>  = flow{
         emit(DataState.Loading)
         try {
@@ -137,6 +168,9 @@ class DealRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Devuelve todos los tratos de la base de datos.
+     */
     override suspend fun getDeals(): Flow<DataState<List<Deal>>> = flow{
         emit(DataState.Loading)
         try {
@@ -156,6 +190,10 @@ class DealRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Suscribe a actualizaciones sobre el trato. Cada vez que se actualiza algún valor del trato, se llama esta función.
+     * @param idDeal trato sobre el cual suscribirse.
+     */
     override suspend fun suscribeForUpdates(idDeal: String): Flow<DataState<Deal?>> = callbackFlow{
         send(DataState.Loading)
         try {

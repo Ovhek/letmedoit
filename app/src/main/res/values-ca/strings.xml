@@ -212,4 +212,19 @@
     <string name="my_services">Els meus serveis</string>
     <string name="initAndEndTime">S\`han d\`indicar l\`hora d\`inici i de finalització</string>
     <string name="usernameEmptyErro">Si us plau, empleneu el nom d\'usuari</string>
+    <string name="noImagePermission">Activa els permisos d\'emmagatzematge per pujar fotografies.</string>
+
+    <string name="clear_filter">netejar el filtre</string>
+    <string name="add_service_to_favorites">afegir servei als preferits</string>
+    <string name="add_image">Afegir imatge</string>
+    <string name="remove_image">eliminar imatge</string>
+    <string name="select_all">Selecciona tot</string>
+    <string name="open_curriculum_pdf">Obrir el curriculum</string>
+    <string name="send_email">Enviar correu</string>
+    <string name="call_user">Trucar a l\'usari</string>
+    <string name="open_google_maps_location">Veure l\'ubicació en Google Maps</string>
+    <string name="manage_reports">Gestionar reports</string>
+    <string name="ban_user">Bloquejar Usuari</string>
+    <string name="archive_report">Archivar report</string>
+    <string name="remove_report">Eliminar report</string>
 </resources>

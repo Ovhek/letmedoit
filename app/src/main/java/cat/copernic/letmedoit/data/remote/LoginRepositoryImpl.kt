@@ -16,13 +16,25 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-//Implementación de la interfaz de Login. Utiliza la inyección de dependencias utilizando @Inject a fin de pedir las dependencias.
+/**
+ * Clase que implementa la interfaz LoginRepository que permite conectarse a la base de datos remota de Firebase y realizar operaciones de login y registro.
+ * Utiliza la librería de coroutines de Kotlin para manejar operaciones asíncronas y emitir flujos de datos (flow) para informar el estado de las operaciones.
+ *
+ * @param auth referencia a la autentification de firebase.
+ * @param usersCollection referencia a la colección de usuarios en la base de datos de Firebase. Inyectado mediante la anotación.
+ *
+ */
 class LoginRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
     @FirebaseModule.UsersCollection private val usersCollection: CollectionReference
 ) : LoginRepository {
 
-    //Corrutinas --> flow que devuelven estados
+    /**
+     * Realiza el login del usuario y revuelve un estado de (éxito, error, carga)
+     *
+     * @param email Email del usuario.
+     * @param password Contraseña del usuario.
+     */
     override suspend fun login(email: String, password: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -39,6 +51,12 @@ class LoginRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Función encargada de registrar uh usuario. Lo añade tanto a Firebase como a Firestore.
+     *
+     * @param user Usuario a añader al Firestore
+     * @param password Contraseña del usuario (Se guarda en Authentification)
+     */
     override suspend fun signUp(user: Users, password: String): Flow<DataState<Users>> = flow {
         //Cargando
         emit(DataState.Loading)
@@ -97,6 +115,9 @@ class LoginRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Función encargada de cerrar la sessión del usuario.
+     */
     override suspend fun logOut(): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -109,6 +130,9 @@ class LoginRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Función encargada de obtener los datos del usuario que se ha registrado.
+     */
     override suspend fun getUserData(): Flow<DataState<Boolean>> = flow {
         var isSuccesful = false
         val currentUser = auth.currentUser
@@ -135,6 +159,10 @@ class LoginRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Función encargada de guardar el usuario en Firestore tras registrarse.
+     * @param user Usuario a guardar en la base de datos.
+     */
     override suspend fun saveUser(user: Users): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {

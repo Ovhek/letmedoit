@@ -213,4 +213,19 @@
     <string name="my_services">Mis servicios</string>
     <string name="initAndEndTime">Se deben indicar la hora de inicio y de finalización.</string>
     <string name="usernameEmptyErro">Por favor, rellene el nombre de usuario</string>
-</resources>
+    <string name="noImagePermission">Activa los permisos de almacenamiento para subir fotos.</string>
+
+    <string name="clear_filter">Quitar filtro</string>
+    <string name="add_service_to_favorites">Añadir servicio a favoritos</string>
+    <string name="add_image">Añadir Imagen</string>
+    <string name="remove_image">Eliminar imagen</string>
+    <string name="select_all">Selecionar todo</string>
+    <string name="open_curriculum_pdf">Abrir pdf del curriculum</string>
+    <string name="send_email">Enviar correo</string>
+    <string name="call_user">Llamar al usuario</string>
+    <string name="open_google_maps_location">Abrir la ubicación en Google Maps</string>
+    <string name="manage_reports">Manejar reporter</string>
+    <string name="ban_user">Banear Usuario</string>
+    <string name="archive_report">Archivar reportes</string>
+    <string name="remove_report">Eliminar reporte</string>
+</resources>clear filter

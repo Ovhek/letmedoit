@@ -212,4 +212,18 @@
     <string name="my_services">My Services</string>
     <string name="initAndEndTime">Init and End time must be indicated</string>
     <string name="usernameEmptyErro">Please fill out username</string>
+    <string name="noImagePermission">Enable storage permissions for uploading photos.</string>
+    <string name="clear_filter">clear filter</string>
+    <string name="add_service_to_favorites">add service to favorites</string>
+    <string name="add_image">Add image</string>
+    <string name="remove_image">Remove image</string>
+    <string name="select_all">Select All</string>
+    <string name="open_curriculum_pdf">Open curriculum pdf</string>
+    <string name="send_email">Send email</string>
+    <string name="call_user">Call user</string>
+    <string name="open_google_maps_location">Open Google Maps location</string>
+    <string name="manage_reports">Manage Reports</string>
+    <string name="ban_user">Ban User</string>
+    <string name="archive_report">Archive Report</string>
+    <string name="remove_report">Remove Report</string>
 </resources>

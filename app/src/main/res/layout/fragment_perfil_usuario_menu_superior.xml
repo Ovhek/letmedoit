@@ -24,6 +24,7 @@
                 android:layout_width="@dimen/app_icon_size_small"
                 android:layout_height="@dimen/app_icon_size_small"
                 android:layout_margin="@dimen/padding_horizontal_cl"
+                android:contentDescription="@string/txt_volver_atras"
                 android:background="@drawable/arrow_back"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

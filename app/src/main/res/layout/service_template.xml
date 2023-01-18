@@ -44,9 +44,10 @@
 
             <TextView
                 android:id="@+id/service_title"
+                android:importantForAccessibility="no"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLength="18"
+                android:maxLength="10"
                 android:layout_marginStart="@dimen/padding_vertical_start_end_8"
                 android:layout_marginTop="@dimen/padding_vertical_start_end_8"
                 android:textSize="@dimen/text_size"
@@ -56,9 +57,10 @@
 
             <TextView
                 android:id="@+id/service_fav"
+                android:contentDescription="@string/add_service_to_favorites"
                 style="@style/IconoClickable"
-                android:layout_width="@dimen/app_icon_size_small"
-                android:layout_height="@dimen/app_icon_size_small"
+                android:layout_width="@dimen/margins_start_end_extra"
+                android:layout_height="@dimen/margins_start_end_extra"
                 android:layout_marginTop="@dimen/padding_vertical_start_end_8"
                 android:layout_marginEnd="@dimen/padding_vertical_start_end_8"
                 android:background="@drawable/favorites_icon_colored"
@@ -90,6 +92,7 @@
                 style="@style/Widget.LetMeDoIt.subtext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
                 android:maxLines="2"
                 android:maxLength="15"
                 app:layout_constraintStart_toStartOf="@id/service_title"
@@ -100,6 +103,7 @@
                 android:id="@+id/service_category"
                 style="@style/Widget.LetMeDoIt.subtext"
                 android:layout_width="wrap_content"
+                android:importantForAccessibility="no"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/padding_vertical_start_end_8"
                 android:layout_marginBottom="@dimen/padding_vertical_start_end_8"

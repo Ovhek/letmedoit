@@ -59,6 +59,7 @@
                 style="@style/IconoClickable"
                 android:layout_width="@dimen/padding_horizontal_cl"
                 android:layout_height="@dimen/padding_vertical_cl"
+                android:contentDescription="@string/open_curriculum_pdf"
                 android:background="@drawable/icon_pdf"
                 app:layout_constraintStart_toStartOf="@id/curriculum_title"
                 app:layout_constraintTop_toBottomOf="@id/curriculum_title" />
@@ -110,6 +111,7 @@
 
             <TextView
                 android:id="@+id/btn_email"
+                android:contentDescription="@string/send_email"
                 style="@style/IconoClickable"
                 android:layout_width="@dimen/padding_horizontal_cl"
                 android:layout_height="@dimen/padding_vertical_cl"
@@ -119,6 +121,7 @@
 
             <TextView
                 android:id="@+id/btn_mobile"
+                android:contentDescription="@string/call_user"
                 style="@style/IconoClickable"
                 android:layout_width="@dimen/padding_horizontal_cl"
                 android:layout_height="@dimen/padding_vertical_cl"
@@ -158,6 +161,7 @@
             <TextView
                 android:id="@+id/location_icon"
                 style="@style/IconoClickable"
+                android:contentDescription="@string/open_google_maps_location"
                 android:layout_width="@dimen/padding_horizontal_cl"
                 android:layout_height="@dimen/padding_vertical_cl"
                 android:background="@drawable/map_location_icon"

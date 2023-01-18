@@ -51,6 +51,9 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Obtiene los usuarios de la base de datos.
+     */
     override suspend fun getAllUsers(): Flow<DataState<List<Users>>> =
         flow<DataState<List<Users>>> {
             emit(DataState.Loading)
@@ -205,6 +208,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Devuelve las opiniones del usuario especificado.
+     * @param idUser id del usuario del cual obtener las opiniones.
+     */
     override suspend fun getOpinions(idUser: String): Flow<DataState<ArrayList<Opinion>>> = flow {
         emit(DataState.Loading)
         try {
@@ -265,6 +272,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Elimina un perfil favorito del usuario.
+     * @param idProfile id del perfil a eliminar.
+     */
     override suspend fun deleteFavoriteProfile(idProfile: String): Flow<DataState<Boolean>> = flow {
         var isSuccesful = false
         emit(DataState.Loading)
@@ -290,6 +301,11 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Elimina un servicio favorito del usuario.
+     *
+     * @param idService id del servicio favorito a eliminar.
+     */
     override suspend fun deleteFavoriteService(idService: String): Flow<DataState<Boolean>> = flow {
         var isSuccesful = false
         emit(DataState.Loading)
@@ -315,6 +331,11 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Elimina el avatar del usuario del storage
+     *
+     * @param imgLink dirección de la imagen.
+     */
     override suspend fun deleteAvatarFromStorage(imgLink: String): Flow<DataState<Boolean>> = flow {
         var isSuccessful = false
         emit(DataState.Loading)
@@ -339,6 +360,11 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Elimina el curriculum del usuario del storage
+     *
+     * @param pdfLink dirección del pdf a eliminar.
+     */
     override suspend fun deleteCurriculumFromStorage(pdfLink: String): Flow<DataState<Boolean>> =
         flow {
             var isSuccessful = false
@@ -364,6 +390,12 @@ class UserRepositoryImpl @Inject constructor(
             }
         }.flowOn(Dispatchers.IO)
 
+    /**
+     * Elimina un trato del historial de tratos del usuario.
+     * @param idDeal id del trato a eliminar,
+     * @param idUser id del usuario1.
+     * @param idUserTwo id del usuario2.
+     */
     override suspend fun deleteDealFromHistory(
         idDeal: String,
         idUser: String,
@@ -408,7 +440,10 @@ class UserRepositoryImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    //ADD
+    /**
+     * Añade un sercicio al usuario.
+     * @param idService id del servicio a añadir.
+     */
     override suspend fun addService(idService: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -432,6 +467,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Ontiene el último indice de una colección
+     * @param colección sobre la cual obtener el indice.
+     */
     private suspend fun getIndex(collection: String): Int {
         return try {
             usersCollection.document(Constants.USER_LOGGED_IN_ID).collection(collection).get()
@@ -441,6 +480,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Añade un perfil a los perfiles favoritos del usuario.
+     * @param idProfile id del usuario el cual guardar.
+     */
     override suspend fun addFavoriteProfiles(idProfile: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -460,6 +503,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Añade un servicio a los servicios favoritos del usuario.
+     * @param idService id del servicio el cual guardar.
+     */
     override suspend fun addFavoriteServices(idService: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -479,6 +526,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Añade un chat al usuario.
+     * @param idChat id del chat a añadir.
+     */
     override suspend fun addChat(idChat: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -501,6 +552,12 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Añade un historial de tratos al usuario.
+     * @param idUserOne id del primer usuario del trato.
+     * @param idUserTwo id del segundo usuario del trato.
+     * @param idDeal id del trato.
+     */
     override suspend fun addHistoryDeal(
         idUserOne: String,
         idUserTwo: String,
@@ -542,6 +599,12 @@ class UserRepositoryImpl @Inject constructor(
             }
         }.flowOn(Dispatchers.IO)
 
+    /**
+     * Añade una opinión a un usuario.
+     *
+     * @param opinion opinion del usuario.
+     * @param idUser id del usuario al cual añadir la opinión
+     */
     override suspend fun addOpinion(opinion: Opinion, idUser: String): Flow<DataState<Boolean>> =
         flow {
             emit(DataState.Loading)
@@ -589,6 +652,10 @@ class UserRepositoryImpl @Inject constructor(
             }
         }.flowOn(Dispatchers.IO)
 
+    /**
+     * Añade una imagen de avatar al storage del usuario.
+     * @param fileUri dirección URI del archivo en el dispositivo del usuario.
+     */
     override suspend fun addAvatarToStorage(fileUri: Uri): Flow<DataState<String>> = flow {
         var uri = ""
         emit(DataState.Loading)
@@ -610,6 +677,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Añade un curriculum (pdf) al Storage.
+     * @param fileUri dirección URI del archivo en el dispositivo del usuario.
+     */
     override suspend fun addCurriculumToStorage(fileUri: Uri): Flow<DataState<String>> = flow {
         var uri = ""
         emit(DataState.Loading)
@@ -631,6 +702,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Añade el token del dispotivo del usuario al Firestore.
+     * @param token token generado por Firebase.
+     */
     override suspend fun addDeviceToken(token: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -650,6 +725,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Actualiza el nombre del usuario actual.
+     * @param newName nuevo nombre del usuario.
+     */
     override suspend fun updateName(newName: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -668,6 +747,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Actualiza el apellido del usuario actual.
+     * @param newSurname nuevo apellido del usuario.
+     */
     override suspend fun updateSurname(newSurname: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -687,6 +770,12 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Actualiza la contraseña del usuario actual.
+     * @param oldPassword contraseña antigua.
+     * @param newPassword contraseña nueva.
+     * @param email email del usuario actual.
+     */
     override suspend fun updatePassword(
         oldPassword: String,
         newPassword: String,
@@ -720,6 +809,11 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Esta función no se utiliza.
+     * Actualiza el idioma del usuario actual.
+     * @param language nuevo idioma del usuario.
+     */
     override suspend fun updateLanguage(language: Int): Flow<DataState<Boolean>> =
         flow<DataState<Boolean>> {
             emit(DataState.Loading)
@@ -741,6 +835,11 @@ class UserRepositoryImpl @Inject constructor(
         }.flowOn(Dispatchers.IO)
 
 
+    /**
+     * Actualiza el estado de ban del usuario-
+     * @param userId id del usuario a actualizar el estado.
+     * @param ban nuevo valor del ban.
+     */
     override suspend fun updateBan(userId: String, ban: Boolean): Flow<DataState<Boolean>> =
         flow<DataState<Boolean>> {
             emit(DataState.Loading)
@@ -762,6 +861,11 @@ class UserRepositoryImpl @Inject constructor(
         }.flowOn(Dispatchers.IO)
 
 
+    /**
+     * ESTA FUNCIÓN NO SE UTILIZA.
+     * Actualiza el tema oscuro del usuario actual.
+     * @param darkTheme nuevo valor del tema oscuro.
+     */
     override suspend fun updateDarkTheme(darkTheme: Boolean): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
 
@@ -781,6 +885,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Actualiza el avatar del usuario actual.
+     * @param imgLink dirección de la imagen del avatar como nuevo valor.
+     */
     override suspend fun updateAvatar(imgLink: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
 
@@ -800,6 +908,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Actualiza el curriculum del usuario actual.
+     * @param pdkLink nuevo link del curriculum del usuario.
+     */
     override suspend fun updateCurriculum(pdfLink: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
 
@@ -819,6 +931,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Actualiza la sección about me del usuario actual.
+     * @param aboutMe nuevo valor para el about me.
+     */
     override suspend fun updateAboutMe(aboutMe: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
 
@@ -838,6 +954,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Actualiza el horario del usuario actual.
+     * @param schedule nuevo horario del usuario actual.
+     */
     override suspend fun updateSchedule(schedule: ScheduleMap): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
@@ -856,6 +976,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    /**
+     * Actualiza la información de contacto del usuario actual.
+     * @param contactInfo nuevos valores de la información de contacto.
+     */
     override suspend fun updateContactInfo(contactInfo: ContactInfoMap): Flow<DataState<Boolean>> =
         flow {
             emit(DataState.Loading)
@@ -876,7 +1000,10 @@ class UserRepositoryImpl @Inject constructor(
             }
         }.flowOn(Dispatchers.IO)
 
-    
+    /**
+     * Actualiza la ubicación del usuario actual.
+     * @param newLocation nuevo valor de la dirección actual.
+     */
     override suspend fun updateLocation(newLocation: String): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
 
