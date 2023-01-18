@@ -53,7 +53,15 @@ android {
 
 }
 dependencies {
-    
+
+    // This dependency is downloaded from the Google’s Maven repository.
+    // So, make sure you also include that repository in your project's build.gradle file.
+    implementation("com.google.android.play:review:2.0.1")
+
+    // For Kotlin users also import the Kotlin extensions library for Play In-App Review:
+    implementation("com.google.android.play:review-ktx:2.0.1")
+
+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
     implementation 'com.github.bumptech.glide:glide:4.14.2'
