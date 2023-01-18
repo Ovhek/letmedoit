@@ -226,4 +226,5 @@
     <string name="ban_user">Ban User</string>
     <string name="archive_report">Archive Report</string>
     <string name="remove_report">Remove Report</string>
+    <string name="title">Title</string>
 </resources>

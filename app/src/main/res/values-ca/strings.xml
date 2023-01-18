@@ -227,4 +227,5 @@
     <string name="ban_user">Bloquejar Usuari</string>
     <string name="archive_report">Archivar report</string>
     <string name="remove_report">Eliminar report</string>
+    <string name="title">Títol</string>
 </resources>
