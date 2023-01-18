@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import cat.copernic.letmedoit.data.model.Report
 import cat.copernic.letmedoit.databinding.ItemAdminReportListBinding
 import cat.copernic.letmedoit.presentation.adapter.admin.viewholder.AdminReportViewHolder
-
+/**
+ * Adapter de reportes
+ */
 class AdminReportAdapter(
     val reportList: List<Report>,
     private val onClickCheckBox:(Report) -> Unit,

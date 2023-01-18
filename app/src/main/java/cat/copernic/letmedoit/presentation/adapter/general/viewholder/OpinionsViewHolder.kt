@@ -12,7 +12,9 @@ import cat.copernic.letmedoit.data.model.Users
 import cat.copernic.letmedoit.databinding.OpinionsUserTemplateBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
-
+/**
+ * ViewHolder de opiniones
+ */
 
 class OpinionsViewHolder(val binding: OpinionsUserTemplateBinding) : RecyclerView.ViewHolder(binding.root)  {
 
@@ -45,6 +47,10 @@ class OpinionsViewHolder(val binding: OpinionsUserTemplateBinding) : RecyclerVie
 
     }
 
+    /**
+     * Ir al perfil del usario
+     * @param id id del usuario
+     */
     private fun goToUser(id: String) {
         var action  = PerfilUsuarioMenuSuperiorDirections.actionPerfilUsuarioMenuSuperiorSelf(userID = id)
 

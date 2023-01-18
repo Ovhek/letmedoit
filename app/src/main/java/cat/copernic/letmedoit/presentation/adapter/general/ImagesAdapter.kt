@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import cat.copernic.letmedoit.data.model.Image
 import cat.copernic.letmedoit.databinding.ImagesListTemplateBinding
 import cat.copernic.letmedoit.presentation.adapter.general.viewholder.ImagesViewHolder
-
+/**
+ * Adapter de imagenes
+ */
 class ImagesAdapter (private var imagesList : ArrayList<Image>) : RecyclerView.Adapter<ImagesViewHolder>(){
 
 

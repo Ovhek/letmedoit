@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import cat.copernic.letmedoit.data.model.Report
 import cat.copernic.letmedoit.databinding.ItemAdminReportListBinding
 import cat.copernic.letmedoit.presentation.adapter.admin.viewholder.AdminArchivedReportsViewHolder
-
 class AdminArchivedReportsAdapter(
     val reportList: List<Report>,
 ) : RecyclerView.Adapter<AdminArchivedReportsViewHolder>() {

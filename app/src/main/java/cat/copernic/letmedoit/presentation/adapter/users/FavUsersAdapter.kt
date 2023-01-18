@@ -12,6 +12,9 @@ import cat.copernic.letmedoit.presentation.adapter.users.viewholder.FavUsersView
 import cat.copernic.letmedoit.presentation.view.users.fragments.viewFavUsers
 import dagger.hilt.android.internal.managers.ViewComponentManager
 
+/**
+ * Adapter de usuarios favoritos
+ */
 class FavUsersAdapter(private val obtenerUsers: ArrayList<Users>, private val fragment: Fragment): RecyclerView.Adapter<FavUsersViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavUsersViewHolder {
         val binding = ItemViewFavUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -23,6 +26,10 @@ class FavUsersAdapter(private val obtenerUsers: ArrayList<Users>, private val fr
     }
     override fun getItemCount(): Int = obtenerUsers.size
 
+    /**
+     * Borrar un usuario faborito del recycler view
+     * @param user Users
+     */
     fun deleteFavUser(user: Users){
         val position = obtenerUsers.indexOf(user)
         obtenerUsers.remove(user)
@@ -31,6 +38,9 @@ class FavUsersAdapter(private val obtenerUsers: ArrayList<Users>, private val fr
         user.id?.let { (fragment as viewFavUsers).deleteFavoriteProfile(it) }
     }
 
+    /**
+     * Limpiar el recycler view
+     */
     fun clear(){
         val size = obtenerUsers.size
         obtenerUsers.clear()

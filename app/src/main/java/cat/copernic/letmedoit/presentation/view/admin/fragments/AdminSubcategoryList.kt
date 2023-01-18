@@ -26,6 +26,11 @@ import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 import org.w3c.dom.Text
 
+/**
+ * Fragment que muestra la susbcategorias
+ * Utiliza ViewModel para comunicarse con el repositorio de categorias.
+ * Permite crear y eliminar subcategorias
+ */
 @AndroidEntryPoint
 class AdminSubcategoryList : Fragment() {
 
@@ -113,6 +118,9 @@ class AdminSubcategoryList : Fragment() {
         return binding.root
     }
 
+    /**
+     * Elimina la animacion de carga al elimnar un subcategoria
+     */
     private fun showDeleteProgress() {
         val btnAccept = dialogBinding.findViewById<Button>(R.id.btn_acceptDeleteCategory)
         val btnCancel = dialogBinding.findViewById<Button>(R.id.btn_cancelDeleteCategory)
@@ -122,6 +130,9 @@ class AdminSubcategoryList : Fragment() {
         loading.isVisible = true
     }
 
+    /**
+     * Crea un subcategoria
+     */
     private fun createSubcategory() {
         //Hace: Crear una categoria, la sube a la bd y refresca el recycler view
 
@@ -155,7 +166,9 @@ class AdminSubcategoryList : Fragment() {
             }
         }
     }
-
+    /**
+     * Muestra la animacion de carga
+     */
     private fun showProgress() {
         //Hace: Muestra una barra de progresso y desactiva todos los contraloderes el popup
         val btnAccept = dialogBinding.findViewById<Button>(R.id.btn_doneCreate)
@@ -170,11 +183,20 @@ class AdminSubcategoryList : Fragment() {
 
     }
 
+    /**
+     * Cierra el popuo que se este mostrando actualmente
+     */
     private fun finishedProgress() {
         //Hace: Finaliza el popup
         myDialog.dismiss()
     }
 
+    /**
+     * Crea una instancia de Subcategory
+     * @param name
+     * @param desc
+     * @return Subcategory
+     */
     private fun createSubcat(name: String, desc: String): Subcategory {
         //hace: crear una categoria
         //return: devuelve una categoria
@@ -184,6 +206,10 @@ class AdminSubcategoryList : Fragment() {
         )
     }
 
+    /**
+     * Borra un subcategoria de la base de datos y del recycler view
+     * @param position Indice en la lista del RecyclerView
+     */
     private fun onDeletedItem(position: Int) {
         //hace: elimina una categoria
         dialogBinding = layoutInflater.inflate(R.layout.delete_category_alert_dialog, null)
@@ -207,7 +233,9 @@ class AdminSubcategoryList : Fragment() {
 
     }
 
-
+    /**
+     * Inicializa el recycler view
+     */
     private fun initRecylerView() {
         adapter =
             AdminSubcategoryAdapter(

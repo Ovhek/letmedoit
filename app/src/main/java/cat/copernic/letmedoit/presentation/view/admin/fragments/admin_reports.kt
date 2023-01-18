@@ -26,9 +26,14 @@ import com.bumptech.glide.Glide.init
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Muestra todos los reportes de la base de datos
+ * Permite elimnar reportes
+ * Banear los usuarios reportados
+ */
 @AndroidEntryPoint
 class admin_reports : Fragment() {
-
+    //Animaciones del boton
     private val rotateOpen: Animation by lazy {
         AnimationUtils.loadAnimation(
             binding.root.context,
@@ -187,7 +192,9 @@ class admin_reports : Fragment() {
         return binding.root
     }
 
-
+    /**
+     * Eliminar reportes seleccionados
+     */
     private fun eliminarReportes() {
 
         reportMutableList.forEachIndexed { i, report ->
@@ -199,6 +206,9 @@ class admin_reports : Fragment() {
         }
     }
 
+    /**
+     * Banear los usuarios reportados de los reportes seleccionados
+     */
     private fun banearUsuarios() {
 
         reportMutableList.forEachIndexed { i, report ->
@@ -211,6 +221,9 @@ class admin_reports : Fragment() {
         }
     }
 
+    /**
+     * Desplegar el menu de botones
+     */
     private fun openFloatingMenu() {
         if (!open) {
             btnOpenMenu.startAnimation(rotateOpen)
@@ -237,6 +250,9 @@ class admin_reports : Fragment() {
         }
     }
 
+    /**
+     * Inicializar el recycler view
+     */
     private fun initRecyclerView() {
 
 
@@ -248,6 +264,10 @@ class admin_reports : Fragment() {
         recyclerView.adapter = adapter
     }
 
+    /**
+     * Cambiar el estado check box del reporte
+     * @param report Report
+     */
     private fun checkTheBox(report: Report) {
         if (report.check) {
             report.check = false
@@ -256,6 +276,9 @@ class admin_reports : Fragment() {
         }
     }
 
+    /**
+     * Inicar la lectura de todos los reporte de la base de datos
+     */
     private fun init() {
         //hace: lee toda las categorias de la base de datos
         viewModel.getReports()

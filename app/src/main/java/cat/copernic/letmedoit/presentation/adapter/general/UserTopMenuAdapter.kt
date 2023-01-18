@@ -5,7 +5,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import kotlin.collections.ArrayList
-
+/**
+ * Adapter menu superior usuario
+ */
 
 class UserTopMenuAdapter(fragmentManager: FragmentManager, val items: ArrayList<Fragment>, lifecycle: Lifecycle): FragmentStateAdapter(fragmentManager,lifecycle) {
     override fun getItemCount(): Int {

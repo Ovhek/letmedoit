@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import cat.copernic.letmedoit.data.model.Image
 import cat.copernic.letmedoit.R
 import com.squareup.picasso.Picasso
-
+/**
+ * ViewHolder de imagenes
+ */
 
 class SliderImagesViewHolder(val view : View) : RecyclerView.ViewHolder(view)  {
 

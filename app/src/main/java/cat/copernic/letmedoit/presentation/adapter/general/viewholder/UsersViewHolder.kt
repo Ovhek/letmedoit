@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.RecyclerView
 import cat.copernic.letmedoit.data.model.Report
 import cat.copernic.letmedoit.data.model.Users
 import cat.copernic.letmedoit.databinding.ItemAdminViewUsersBinding
-
+/**
+ * ViewHolder de usuarios
+ */
 class UsersViewHolder(val binding: ItemAdminViewUsersBinding) :
     RecyclerView.ViewHolder(binding.root) {
 

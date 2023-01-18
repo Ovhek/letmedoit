@@ -4,7 +4,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import cat.copernic.letmedoit.data.model.Category
 import cat.copernic.letmedoit.databinding.ItemListCategoryAdminBinding
-
+/**
+ * ViewHolder de categorias
+ */
 class AdminCategoryViewHolder(val binding: ItemListCategoryAdminBinding) :
     RecyclerView.ViewHolder(binding.root) {
 

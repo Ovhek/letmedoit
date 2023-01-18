@@ -8,7 +8,9 @@ import cat.copernic.letmedoit.data.model.Service
 import cat.copernic.letmedoit.data.model.Users
 import cat.copernic.letmedoit.databinding.OpinionsUserTemplateBinding
 import cat.copernic.letmedoit.presentation.adapter.general.viewholder.OpinionsViewHolder
-
+/**
+ * Adapter de opiniones
+ */
 class OpinionsAdapter(
     private var opinionsList: ArrayList<Opinion>,
     private val users: ArrayList<Users>,

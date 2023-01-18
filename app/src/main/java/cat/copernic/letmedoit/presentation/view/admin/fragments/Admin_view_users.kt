@@ -21,6 +21,9 @@ import com.bumptech.glide.Glide.init
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Fragment que muestra todos los usuarios y permite banearlos
+ */
 @AndroidEntryPoint
 class admin_view_users : Fragment() {
 
@@ -95,6 +98,9 @@ class admin_view_users : Fragment() {
         return binding.root
     }
 
+    /**
+     * Banea a los usuarios seleccionados en el recycler view
+     */
     private fun banearUsuarios() {
 
         usersList.forEachIndexed { i, user ->
@@ -112,6 +118,9 @@ class admin_view_users : Fragment() {
         }
     }
 
+    /**
+     * Inicializa el recycler view
+     */
     fun initRecyclerView() {
         binding.recyclerViewUsers.layoutManager = LinearLayoutManager(binding.root.context)
         adapter =
@@ -120,11 +129,17 @@ class admin_view_users : Fragment() {
         binding.recyclerViewUsers.adapter = adapter
     }
 
+    /**
+     * Cambia el estado del check box de el usuario
+     * @param user Users
+     */
     private fun checkTheBox(user: Users) {
         user.check = !user.check
     }
 
-
+    /**
+     * Inicia la lectura de todos los usuarios de la base de datos
+     */
     private fun init() {
         viewModel.getAllUser()
     }

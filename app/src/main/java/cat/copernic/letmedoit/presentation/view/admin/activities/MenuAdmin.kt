@@ -7,6 +7,9 @@ import cat.copernic.letmedoit.R
 import cat.copernic.letmedoit.databinding.ActivityMenuAdminBinding
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Activity que carga los fragments del navigation admin
+ */
 @AndroidEntryPoint
 class MenuAdmin : AppCompatActivity() {
     lateinit var binding : ActivityMenuAdminBinding
@@ -16,7 +19,9 @@ class MenuAdmin : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-
+    /**
+     * Funcion para volver a la pantalla anterior
+     */
     override fun onBackPressed() {
         if ((binding.navController.findNavController().currentDestination?.id
                 ?: -1) != R.id.admin_menu

@@ -10,7 +10,9 @@ import cat.copernic.letmedoit.data.model.Users
 import cat.copernic.letmedoit.databinding.ItemVerDealsBinding
 import cat.copernic.letmedoit.presentation.view.general.fragments.chats_deals_manager_visDirections
 import com.squareup.picasso.Picasso
-
+/**
+ * ViewHolder de tratos del usuario
+ */
 class DealsViewHolder(val binding: ItemVerDealsBinding): RecyclerView.ViewHolder(binding.root) {
 
     @SuppressLint("SetTextI18n")
@@ -23,6 +25,11 @@ class DealsViewHolder(val binding: ItemVerDealsBinding): RecyclerView.ViewHolder
         binding.cardvVerDeals.setOnClickListener{ onClickItem(dealToShow.deal,dealToShow.userTwo) }
     }
 
+    /**
+     * Ejecuta la operacion correspondiente segun el estado del trato
+     * @param deal trato pulsado
+     * @param user Users
+     */
     private fun onClickItem(deal: Deal, user: Users) {
         if (deal.accepted){
             //En caso de dar a la vez clic en un trato en estado de conclusion y una sin concluir peta.

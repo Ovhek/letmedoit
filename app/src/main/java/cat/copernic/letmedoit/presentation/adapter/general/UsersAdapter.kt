@@ -7,7 +7,9 @@ import cat.copernic.letmedoit.data.model.Report
 import cat.copernic.letmedoit.data.model.Users
 import cat.copernic.letmedoit.databinding.ItemAdminViewUsersBinding
 import cat.copernic.letmedoit.presentation.adapter.general.viewholder.UsersViewHolder
-
+/**
+ * Adapter de usuarios
+ */
 class UsersAdapter(
     private val obtenerUsers: ArrayList<Users>,
     private val onClickCheckBox: (Users) -> Unit,

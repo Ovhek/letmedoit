@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import cat.copernic.letmedoit.Utils.datahepers.DealsUsersServicesJoin
 import cat.copernic.letmedoit.databinding.ItemVerDealsBinding
 import cat.copernic.letmedoit.presentation.adapter.users.viewholder.DealsViewHolder
-
+/**
+ * Adapter de tratos del usuario
+ */
 class DealsAdapter(
     private val dealsToShow: ArrayList<DealsUsersServicesJoin>,
 ) : RecyclerView.Adapter<DealsViewHolder>() {

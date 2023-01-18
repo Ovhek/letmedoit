@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import cat.copernic.letmedoit.data.model.Subcategory
 import cat.copernic.letmedoit.databinding.ItemListSubcategoryAdminBinding
 import cat.copernic.letmedoit.presentation.adapter.admin.viewholder.AdminSubcategoryViewHolder
-
+/**
+ * Adapter de subcategorias
+ */
 class AdminSubcategoryAdapter(
     private val subcategoryList: List<Subcategory>,
     private val onClickDelete:(Int) -> Unit,

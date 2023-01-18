@@ -7,7 +7,9 @@ import cat.copernic.letmedoit.data.model.Image
 import cat.copernic.letmedoit.databinding.ImagesListTemplateBinding
 import com.squareup.picasso.Picasso
 
-
+/**
+ * ViewHolder de imagenes
+ */
 class ImagesViewHolder(val binding : ImagesListTemplateBinding) : RecyclerView.ViewHolder(binding.root) {
 
     val checkBox = binding.itemSelected
