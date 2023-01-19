@@ -228,4 +228,5 @@
     <string name="ban_user">Banear Usuario</string>
     <string name="archive_report">Archivar reportes</string>
     <string name="remove_report">Eliminar reporte</string>
-</resources>clear filter
+    <string name="title">Título</string>
+</resources>

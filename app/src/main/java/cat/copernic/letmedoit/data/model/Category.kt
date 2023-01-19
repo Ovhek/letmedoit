@@ -18,7 +18,6 @@ import kotlin.collections.ArrayList
 @Keep
 @Parcelize
 data class Category(
-
     var nombre: String = "",
     var description: String = "",
     @get:Exclude var subcategories: ArrayList<Subcategory> = arrayListOf(Subcategory("","","")),
