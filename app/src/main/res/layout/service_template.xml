@@ -45,6 +45,9 @@
             <TextView
                 android:id="@+id/service_title"
                 android:importantForAccessibility="no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLength="10"
                 android:contentDescription="@string/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -61,6 +64,8 @@
                 android:id="@+id/service_fav"
                 android:contentDescription="@string/add_service_to_favorites"
                 style="@style/IconoClickable"
+                android:layout_width="@dimen/margins_start_end_extra"
+                android:layout_height="@dimen/margins_start_end_extra"
                 android:layout_width="@dimen/margins_start_end_extra_plus"
                 android:layout_height="@dimen/margins_start_end_extra_plus"
                 android:layout_marginTop="@dimen/padding_vertical_start_end_8"

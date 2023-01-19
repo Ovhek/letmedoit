@@ -187,8 +187,6 @@ class Home : AppCompatActivity() {
             }
         }
     }
-
-    /**
      * Control para volver hacia atras en los recyclerviews, si el destino actual es la primera pantalla no vuelve hacia atras
      */
     override fun onBackPressed() {
