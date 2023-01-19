@@ -187,6 +187,38 @@ class Home : AppCompatActivity() {
             }
         }
     }
+
+    /**
+     * Función encargada de revisar los dias que se ha ejecutado la aplicación y mostrar una opción para añadir una reseña a Google Play al cabo de dos disas.
+     * Código obtenido de https://developer.android.com/guide/playcore/in-app-review/kotlin-java
+     */
+    private fun showReviewReminder() {
+        val prefs = getSharedPreferences("appPrefs", Context.MODE_PRIVATE)
+        val editor = prefs.edit()
+        val launchCount = prefs.getInt("launchCount", 0) + 1
+        editor.putInt("launchCount", launchCount)
+        editor.apply()
+
+        if (launchCount == 2) {
+            val manager = ReviewManagerFactory.create(this)
+            val request = manager.requestReviewFlow()
+            request.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // We got the ReviewInfo object
+                    val reviewInfo = task.result
+                    val flow = manager.launchReviewFlow(this, reviewInfo)
+                    flow.addOnCompleteListener { _ ->
+                        // The flow has finished. The API does not indicate whether the user
+                        // reviewed or not, or even whether the review dialog was shown. Thus, no
+                        // matter the result, we continue our app flow.
+                    }
+                } else {
+                    // There was some problem, log or handle the error code.
+
+                }
+            }
+        }
+    }
      * Control para volver hacia atras en los recyclerviews, si el destino actual es la primera pantalla no vuelve hacia atras
      */
     override fun onBackPressed() {
