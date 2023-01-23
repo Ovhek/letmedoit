@@ -1,6 +1,6 @@
 # LetMeDoIt
 
-App LetMeDoIt
+App LetMeDoIt - Intercambio de servicios
 
 # Dokka
 
@@ -15,3 +15,6 @@ Google Services API Key is required (services.json from Firebase)
 
 # Memoria
 https://docs.google.com/document/d/1svdExLT_UBCpY7xe_uHFrMJh0N0Ng6LzGy8fasbak2s/edit?usp=sharing
+
+# Video Demo
+https://youtu.be/ytjOF7T2O30
